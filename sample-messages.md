@@ -1,233 +1,151 @@
-# Webex Sample Messages
+﻿# Webex Sample Messages (Captured Data)
 
-This file contains real-world webhook examples for reference during development and debugging.
+This document is built from one real captured Webex interaction set.
+All payloads below are directly from the capture and keep redactions.
 
-## Message Created Webhook
-
-When a user sends a message in a space:
+## Capture Metadata
 
 ```json
 {
-  "id": "webhook-event-id",
+  "botName": "DummytestbotForChatSDK",
+  "botUserId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8zY2RkNDA1OS05MjU4LTQ3N2QtYjQ5NC1jMTMzYWMyY2ZhZDU"
+}
+```
+
+## Webhook: `messages` `created`
+
+```json
+{
+  "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1dFQkhPT0svMjU0NWI5NmUtZTIyNy00YmJmLWIyZWEtNDhmZjcxMWY5ZjIz",
+  "name": "chat-sdk-webex-messages-created",
+  "targetUrl": "https://redacted.example.invalid/api/webhooks/webex",
   "resource": "messages",
   "event": "created",
-  "actorId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS91c2VyLTEyMw",
+  "orgId": "Y2lzY29zcGFyazovL3VzL09SR0FOSVpBVElPTi83MWI2YjM0Yy1hYmZmLTQ0MDctYWM1MC01ZTYyMzIzYWVkODA",
+  "createdBy": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8zY2RkNDA1OS05MjU4LTQ3N2QtYjQ5NC1jMTMzYWMyY2ZhZDU",
+  "appId": "Y2lzY29zcGFyazovL3VzL0FQUExJQ0FUSU9OL0MzMmM4MDc3NDBjNmU3ZGYxMWRhZjE2ZjIyOGRmNjI4YmJjYTQ5YmE1MmZlY2JiMmM3ZDUxNWNiNGEwY2M5MWFh",
+  "ownedBy": "creator",
+  "status": "active",
+  "created": "2026-02-25T19:19:04.231Z",
+  "actorId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS9lMjg5YTQ3MC05ODE4LTQ4MmItYjI1ZC00MTYyYWE4OWQ4NWU",
   "data": {
-    "id": "Y2lzY29zcGFyazovL3VzL01FU1NBR0UvbXNnLTEyMzQ1",
-    "roomId": "Y2lzY29zcGFyazovL3VzL1JPT00vcm9vbS0xMjM",
-    "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS91c2VyLTEyMw",
-    "personEmail": "user@example.com"
+    "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvNzZmZDk5ZjAtMTQ0MC0xMWYxLTk2Y2YtMTM5MjFjNTUwMDgz",
+    "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vMjhhOTBjNzAtMTI3Zi0xMWYxLTgxMWEtZWY5MjlkNWIyMjI0",
+    "roomType": "direct",
+    "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS9lMjg5YTQ3MC05ODE4LTQ4MmItYjI1ZC00MTYyYWE4OWQ4NWU",
+    "personEmail": "redacted@example.invalid",
+    "created": "2026-02-28T00:57:33.199Z"
   }
 }
 ```
 
-## Message Details (fetched after webhook)
+## Webhook: `attachmentActions` `created`
 
 ```json
 {
-  "id": "Y2lzY29zcGFyazovL3VzL01FU1NBR0UvbXNnLTEyMzQ1",
-  "roomId": "Y2lzY29zcGFyazovL3VzL1JPT00vcm9vbS0xMjM",
-  "roomType": "group",
-  "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS91c2VyLTEyMw",
-  "personEmail": "user@example.com",
-  "text": "@TestBot hello!",
-  "markdown": "<spark-mention data-object-type=\"person\" data-object-id=\"bot-id\">TestBot</spark-mention> hello!",
-  "mentionedPeople": ["Y2lzY29zcGFyazovL3VzL1BFT1BMRS9ib3QtaWQ"],
-  "created": "2026-02-27T10:30:00.000Z"
-}
-```
-
-## Thread Reply (message with parentId)
-
-```json
-{
-  "id": "Y2lzY29zcGFyazovL3VzL01FU1NBR0UvcmVwbHktMTIz",
-  "roomId": "Y2lzY29zcGFyazovL3VzL1JPT00vcm9vbS0xMjM",
-  "roomType": "group",
-  "parentId": "Y2lzY29zcGFyazovL3VzL01FU1NBR0Uvcm9vdC0xMjM",
-  "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS91c2VyLTEyMw",
-  "personEmail": "user@example.com",
-  "text": "This is a reply in a thread",
-  "created": "2026-02-27T10:35:00.000Z"
-}
-```
-
-## Direct Message (1:1 Space)
-
-```json
-{
-  "id": "Y2lzY29zcGFyazovL3VzL01FU1NBR0UvZG0tbXNn",
-  "roomId": "Y2lzY29zcGFyazovL3VzL1JPT00vZG0tcm9vbQ",
-  "roomType": "direct",
-  "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS91c2VyLTEyMw",
-  "personEmail": "user@example.com",
-  "text": "Hello in DM",
-  "created": "2026-02-27T10:40:00.000Z"
-}
-```
-
-## Attachment Action Webhook (Card Button Click)
-
-When a user clicks a button on an Adaptive Card:
-
-```json
-{
-  "id": "webhook-action-id",
+  "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1dFQkhPT0svYWUwOThhNjQtNGJjNy00Y2FhLWJiOTQtMDBjMWZmODE3ZTUy",
+  "name": "chat-sdk-webex-attachment-actions-created",
+  "targetUrl": "https://redacted.example.invalid/api/webhooks/webex",
   "resource": "attachmentActions",
   "event": "created",
-  "actorId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS91c2VyLTEyMw",
+  "orgId": "Y2lzY29zcGFyazovL3VzL09SR0FOSVpBVElPTi83MWI2YjM0Yy1hYmZmLTQ0MDctYWM1MC01ZTYyMzIzYWVkODA",
+  "createdBy": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8zY2RkNDA1OS05MjU4LTQ3N2QtYjQ5NC1jMTMzYWMyY2ZhZDU",
+  "appId": "Y2lzY29zcGFyazovL3VzL0FQUExJQ0FUSU9OL0MzMmM4MDc3NDBjNmU3ZGYxMWRhZjE2ZjIyOGRmNjI4YmJjYTQ5YmE1MmZlY2JiMmM3ZDUxNWNiNGEwY2M5MWFh",
+  "ownedBy": "creator",
+  "status": "active",
+  "created": "2026-02-25T19:19:04.436Z",
+  "actorId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS9lMjg5YTQ3MC05ODE4LTQ4MmItYjI1ZC00MTYyYWE4OWQ4NWU",
   "data": {
-    "id": "Y2lzY29zcGFyazovL3VzL0FUVEFDSE1FTlRfQUNUSU9OL2FjdGlvbi0xMjM",
-    "roomId": "Y2lzY29zcGFyazovL3VzL1JPT00vcm9vbS0xMjM",
-    "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS91c2VyLTEyMw",
-    "personEmail": "user@example.com"
+    "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL0FUVEFDSE1FTlRfQUNUSU9OLzc5ZWZiMGQwLTE0NDAtMTFmMS05NmNmLTEzOTIxYzU1MDA4Mw",
+    "type": "submit",
+    "messageId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvNzdmZjJiNzAtMTQ0MC0xMWYxLWJiOWMtN2ZlNGUzY2JmMTdl",
+    "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS9lMjg5YTQ3MC05ODE4LTQ4MmItYjI1ZC00MTYyYWE4OWQ4NWU",
+    "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vMjhhOTBjNzAtMTI3Zi0xMWYxLTgxMWEtZWY5MjlkNWIyMjI0",
+    "created": "2026-02-28T00:57:38.141Z"
   }
 }
 ```
 
-## Attachment Action Details (fetched after webhook)
+## API: `GET /messages/{id}` (captured messages)
+
+### Message 1
 
 ```json
 {
-  "id": "Y2lzY29zcGFyazovL3VzL0FUVEFDSE1FTlRfQUNUSU9OL2FjdGlvbi0xMjM",
-  "type": "submit",
-  "messageId": "Y2lzY29zcGFyazovL3VzL01FU1NBR0UvY2FyZC1tc2c",
-  "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS91c2VyLTEyMw",
-  "roomId": "Y2lzY29zcGFyazovL3VzL1JPT00vcm9vbS0xMjM",
-  "inputs": {
-    "actionId": "approve",
-    "value": "yes"
-  },
-  "created": "2026-02-27T10:45:00.000Z"
+  "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvNzZmZDk5ZjAtMTQ0MC0xMWYxLTk2Y2YtMTM5MjFjNTUwMDgz",
+  "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vMjhhOTBjNzAtMTI3Zi0xMWYxLTgxMWEtZWY5MjlkNWIyMjI0",
+  "roomType": "direct",
+  "text": "test",
+  "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS9lMjg5YTQ3MC05ODE4LTQ4MmItYjI1ZC00MTYyYWE4OWQ4NWU",
+  "personEmail": "redacted@example.invalid",
+  "created": "2026-02-28T00:57:33.199Z"
 }
 ```
 
-## Modal Form Submit (Adaptive Card with Input Fields)
+### Message 2 (bot reply)
 
 ```json
 {
-  "id": "Y2lzY29zcGFyazovL3VzL0FUVEFDSE1FTlRfQUNUSU9OL21vZGFsLWFjdGlvbg",
-  "type": "submit",
-  "messageId": "Y2lzY29zcGFyazovL3VzL01FU1NBR0UvbW9kYWwtbXNn",
-  "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS91c2VyLTEyMw",
-  "roomId": "Y2lzY29zcGFyazovL3VzL1JPT00vcm9vbS0xMjM",
-  "inputs": {
-    "actionId": "__chat_modal_submit:view-123",
-    "_chat_modal_flag": "1",
-    "_chat_modal_view_id": "view-123",
-    "_chat_modal_callback_id": "feedback_form",
-    "_chat_modal_context_id": "ctx-123",
-    "feedback": "Great product!",
-    "rating": "5"
-  },
-  "created": "2026-02-27T10:50:00.000Z"
+  "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvNzdmZjJiNzAtMTQ0MC0xMWYxLWJiOWMtN2ZlNGUzY2JmMTdl",
+  "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vMjhhOTBjNzAtMTI3Zi0xMWYxLTgxMWEtZWY5MjlkNWIyMjI0",
+  "roomType": "direct",
+  "text": "👋 Welcome! Connected via webex I'm now listening to this thread. Try these actions: ✨ Mention me with \"AI\" to enable AI assistant mode DM Support: Yes Platform: webex",
+  "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8zY2RkNDA1OS05MjU4LTQ3N2QtYjQ5NC1jMTMzYWMyY2ZhZDU",
+  "personEmail": "DummytestbotForChatSDK@webex.bot",
+  "created": "2026-02-28T00:57:34.887Z",
+  "parentId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvNzZmZDk5ZjAtMTQ0MC0xMWYxLTk2Y2YtMTM5MjFjNTUwMDgz"
 }
 ```
 
-## Message with File Attachment
+## API: `GET /attachment/actions/{id}`
 
 ```json
 {
-  "id": "Y2lzY29zcGFyazovL3VzL01FU1NBR0UvZmlsZS1tc2c",
-  "roomId": "Y2lzY29zcGFyazovL3VzL1JPT00vcm9vbS0xMjM",
-  "roomType": "group",
-  "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS91c2VyLTEyMw",
-  "personEmail": "user@example.com",
-  "text": "Check out this file",
-  "files": [
-    "https://webexapis.com/v1/contents/Y2lzY29zcGFyazovL3VzL0NPTlRFTlQv..."
+  "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL0FUVEFDSE1FTlRfQUNUSU9OLzc5ZWZiMGQwLTE0NDAtMTFmMS05NmNmLTEzOTIxYzU1MDA4Mw",
+  "type": "submit",
+  "messageId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvNzdmZjJiNzAtMTQ0MC0xMWYxLWJiOWMtN2ZlNGUzY2JmMTdl",
+  "inputs": {
+    "actionId": "hello"
+  },
+  "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS9lMjg5YTQ3MC05ODE4LTQ4MmItYjI1ZC00MTYyYWE4OWQ4NWU",
+  "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vMjhhOTBjNzAtMTI3Zi0xMWYxLTgxMWEtZWY5MjlkNWIyMjI0",
+  "created": "2026-02-28T00:57:38.141Z"
+}
+```
+
+## API: `GET /people/{id}`
+
+```json
+{
+  "id": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS9lMjg5YTQ3MC05ODE4LTQ4MmItYjI1ZC00MTYyYWE4OWQ4NWU",
+  "emails": [
+    "redacted@example.invalid"
   ],
-  "created": "2026-02-27T10:55:00.000Z"
-}
-```
-
-## Person Details
-
-```json
-{
-  "id": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS91c2VyLTEyMw",
-  "emails": ["user@example.com"],
-  "displayName": "John Doe",
-  "nickName": "John",
-  "firstName": "John",
-  "lastName": "Doe",
-  "avatar": "https://avatar.webex.com/...",
-  "orgId": "Y2lzY29zcGFyazovL3VzL09SR0FOSVpBVElPTi9vcmctMTIz",
+  "displayName": "Redacted User",
+  "nickName": "Redacted",
+  "firstName": "Redacted",
+  "lastName": "User",
+  "userName": "redacted@example.invalid",
   "type": "person"
 }
 ```
 
-## Room (Space) Details
+## API: `GET /rooms/{id}`
 
 ```json
 {
-  "id": "Y2lzY29zcGFyazovL3VzL1JPT00vcm9vbS0xMjM",
-  "title": "Project Discussion",
-  "type": "group",
+  "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vMjhhOTBjNzAtMTI3Zi0xMWYxLTgxMWEtZWY5MjlkNWIyMjI0",
+  "title": "Redacted User",
+  "type": "direct",
   "isLocked": false,
-  "lastActivity": "2026-02-27T10:30:00.000Z",
-  "creatorId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS9jcmVhdG9yLTEyMw",
-  "created": "2026-01-15T09:00:00.000Z"
+  "isPublic": false,
+  "isReadOnly": false
 }
 ```
 
-## Message Reactions
+## Notes From This Capture
 
-### Add Reaction (POST /messages/{messageId}/reactions)
-
-Request body:
-```json
-{
-  "reaction": "thumbsup"
-}
-```
-
-Response:
-```json
-{
-  "id": "Y2lzY29zcGFyazovL3VzL1JFQUNUSU9OL3JlYWN0aW9uLTEyMw",
-  "messageId": "Y2lzY29zcGFyazovL3VzL01FU1NBR0UvbXNnLTEyMzQ1",
-  "roomId": "Y2lzY29zcGFyazovL3VzL1JPT00vcm9vbS0xMjM",
-  "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS9ib3QtaWQ",
-  "personEmail": "bot@example.webex.com",
-  "reaction": "thumbsup",
-  "created": "2026-02-27T11:00:00.000Z"
-}
-```
-
-### List Reactions (GET /messages/{messageId}/reactions)
-
-```json
-{
-  "items": [
-    {
-      "id": "Y2lzY29zcGFyazovL3VzL1JFQUNUSU9OL3JlYWN0aW9uLTEyMw",
-      "messageId": "Y2lzY29zcGFyazovL3VzL01FU1NBR0UvbXNnLTEyMzQ1",
-      "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS91c2VyLTEyMw",
-      "reaction": "thumbsup",
-      "created": "2026-02-27T11:00:00.000Z"
-    },
-    {
-      "id": "Y2lzY29zcGFyazovL3VzL1JFQUNUSU9OL3JlYWN0aW9uLTQ1Ng",
-      "messageId": "Y2lzY29zcGFyazovL3VzL01FU1NBR0UvbXNnLTEyMzQ1",
-      "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS91c2VyLTQ1Ng",
-      "reaction": "heart",
-      "created": "2026-02-27T11:01:00.000Z"
-    }
-  ]
-}
-```
-
-### Supported Reaction Shortcodes
-
-Webex supports the following reaction shortcodes:
-- `thumbsup` - 👍
-- `thumbsdown` - 👎
-- `heart` - ❤️
-- `celebrate` - 🎉
-- `clap` - 👏
-- `haha` - 😂
-- `surprised` - 😮
-- `thinking` - 🤔
-- `sad` - 😢
-- `angry` - 😠
+- This capture is DM-only (`roomType: "direct"`), not a group mention scenario.
+- No `spark-mention` HTML payload is present in this dataset.
+- No modal submit payload is present in this dataset.
+- No reaction payload is present in this dataset.
