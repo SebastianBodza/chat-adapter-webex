@@ -1,0 +1,58 @@
+{
+  "name": "@bitbasti/chat-adapter-webex",
+  "version": "0.1.0",
+  "description": "Webex adapter for Chat SDK",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist coverage"
+  },
+  "dependencies": {
+    "@chat-adapter/shared": "^4.15.0"
+  },
+  "peerDependencies": {
+    "chat": "^4.15.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@vitest/coverage-v8": "^4.0.18",
+    "chat": "^4.15.0",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^4.0.18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitbasti/chat-adapter-webex.git"
+  },
+  "homepage": "https://github.com/bitbasti/chat-adapter-webex#readme",
+  "bugs": {
+    "url": "https://github.com/bitbasti/chat-adapter-webex/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "chat-sdk",
+    "chat-adapter",
+    "webex"
+  ],
+  "license": "MIT"
+}
