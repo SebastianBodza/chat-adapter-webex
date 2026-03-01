@@ -20,11 +20,13 @@ describe("cardToWebexAdaptiveCard", () => {
               id: "approve",
               label: "Approve",
               value: "yes",
+              style: "primary",
             },
             {
               type: "link-button",
               label: "Open Runbook",
               url: "https://example.com/runbook",
+              style: "danger",
             },
           ],
         },
@@ -38,7 +40,35 @@ describe("cardToWebexAdaptiveCard", () => {
     expect(converted.actions?.[0]).toMatchObject({
       type: "Action.Submit",
       title: "Approve",
+      style: "positive",
     });
+    expect(converted.actions?.[1]).toMatchObject({
+      type: "Action.OpenUrl",
+      style: "destructive",
+    });
+  });
+
+  it("omits style when button style is not set", () => {
+    const card = {
+      type: "card",
+      title: "No style",
+      children: [
+        {
+          type: "actions",
+          children: [
+            {
+              type: "button",
+              id: "plain",
+              label: "Plain",
+            },
+          ],
+        },
+      ],
+    } as const;
+
+    const converted = cardToWebexAdaptiveCard(card);
+    const action = converted.actions?.[0] as Record<string, unknown>;
+    expect(action.style).toBeUndefined();
   });
 });
 

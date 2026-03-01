@@ -40,11 +40,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bitbasti/chat-adapter-webex.git"
+    "url": "git+https://github.com/SebastianBodza/chat-adapter-webex.git"
   },
-  "homepage": "https://github.com/bitbasti/chat-adapter-webex#readme",
+  "homepage": "https://github.com/SebastianBodza/chat-adapter-webex#readme",
   "bugs": {
-    "url": "https://github.com/bitbasti/chat-adapter-webex/issues"
+    "url": "https://github.com/SebastianBodza/chat-adapter-webex/issues"
   },
   "publishConfig": {
     "access": "public"

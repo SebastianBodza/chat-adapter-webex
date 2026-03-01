@@ -81,6 +81,18 @@ function createWebhookRequest(body: string, secret: string): Request {
   });
 }
 
+function createWaitUntilTracker() {
+  const tasks: Promise<unknown>[] = [];
+  return {
+    waitUntil: (task: Promise<unknown>) => {
+      tasks.push(task);
+    },
+    waitForAll: async () => {
+      await Promise.allSettled(tasks);
+    },
+  };
+}
+
 describe("createWebexAdapter", () => {
   const originalToken = process.env.WEBEX_BOT_TOKEN;
 
@@ -191,15 +203,19 @@ describe("handleWebhook", () => {
     const state = createMockState();
     const chat = createMockChat(state);
     await adapter.initialize(chat);
+    const tracker = createWaitUntilTracker();
 
     const body = JSON.stringify({
       resource: "messages",
       event: "created",
       data: { id: "msg-1" },
     });
-    const response = await adapter.handleWebhook(createWebhookRequest(body, "secret"));
+    const response = await adapter.handleWebhook(createWebhookRequest(body, "secret"), {
+      waitUntil: tracker.waitUntil,
+    });
 
     expect(response.status).toBe(200);
+    await tracker.waitForAll();
     expect(chat.processMessage).toHaveBeenCalledTimes(1);
     const call = (chat.processMessage as ReturnType<typeof vi.fn>).mock.calls[0];
     expect(call[0]).toBe(adapter);
@@ -247,15 +263,19 @@ describe("handleWebhook", () => {
     const state = createMockState();
     const chat = createMockChat(state);
     await adapter.initialize(chat);
+    const tracker = createWaitUntilTracker();
 
     const body = JSON.stringify({
       resource: "attachmentActions",
       event: "created",
       data: { id: "action-1" },
     });
-    const response = await adapter.handleWebhook(createWebhookRequest(body, "secret"));
+    const response = await adapter.handleWebhook(createWebhookRequest(body, "secret"), {
+      waitUntil: tracker.waitUntil,
+    });
 
     expect(response.status).toBe(200);
+    await tracker.waitForAll();
     expect(chat.processAction).toHaveBeenCalledTimes(1);
     const actionEvent = (chat.processAction as ReturnType<typeof vi.fn>).mock
       .calls[0][0];
@@ -303,15 +323,19 @@ describe("handleWebhook", () => {
     const state = createMockState();
     const chat = createMockChat(state);
     await adapter.initialize(chat);
+    const tracker = createWaitUntilTracker();
 
     const body = JSON.stringify({
       resource: "attachmentActions",
       event: "created",
       data: { id: "action-2" },
     });
-    const response = await adapter.handleWebhook(createWebhookRequest(body, "secret"));
+    const response = await adapter.handleWebhook(createWebhookRequest(body, "secret"), {
+      waitUntil: tracker.waitUntil,
+    });
 
     expect(response.status).toBe(200);
+    await tracker.waitForAll();
     expect(chat.processAction).toHaveBeenCalledTimes(1);
     const actionEvent = (chat.processAction as ReturnType<typeof vi.fn>).mock
       .calls[0][0];
@@ -365,15 +389,19 @@ describe("handleWebhook", () => {
     const state = createMockState();
     const chat = createMockChat(state);
     await adapter.initialize(chat);
+    const tracker = createWaitUntilTracker();
 
     const body = JSON.stringify({
       resource: "attachmentActions",
       event: "created",
       data: { id: "action-modal-1" },
     });
-    const response = await adapter.handleWebhook(createWebhookRequest(body, "secret"));
+    const response = await adapter.handleWebhook(createWebhookRequest(body, "secret"), {
+      waitUntil: tracker.waitUntil,
+    });
 
     expect(response.status).toBe(200);
+    await tracker.waitForAll();
     expect(chat.processAction).not.toHaveBeenCalled();
     expect(chat.processModalSubmit).toHaveBeenCalledTimes(1);
     const submitEvent = (chat.processModalSubmit as ReturnType<typeof vi.fn>).mock
@@ -386,6 +414,56 @@ describe("handleWebhook", () => {
     const deleteCall = fetchMock.mock.calls[3];
     expect(String(deleteCall[0])).toContain("/messages/msg-modal-1");
     expect((deleteCall[1] as RequestInit).method).toBe("DELETE");
+  });
+
+  it("acks immediately and defers message processing", async () => {
+    let resolveMessageFetch: ((value: Response) => void) | undefined;
+    const fetchMock = vi.mocked(fetch);
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          resolveMessageFetch = resolve;
+        })
+    );
+
+    const adapter = createWebexAdapter({
+      botToken: "token",
+      botUserId: "bot-person-id",
+      webhookSecret: "secret",
+      userName: "bot",
+      logger: mockLogger,
+    });
+    const state = createMockState();
+    const chat = createMockChat(state);
+    await adapter.initialize(chat);
+    const tracker = createWaitUntilTracker();
+
+    const body = JSON.stringify({
+      resource: "messages",
+      event: "created",
+      data: { id: "msg-ack" },
+    });
+
+    const response = await adapter.handleWebhook(createWebhookRequest(body, "secret"), {
+      waitUntil: tracker.waitUntil,
+    });
+
+    expect(response.status).toBe(200);
+    expect(chat.processMessage).not.toHaveBeenCalled();
+
+    resolveMessageFetch?.(
+      jsonResponse({
+        id: "msg-ack",
+        roomId: "room-ack",
+        personId: "user-ack",
+        personEmail: "ack@example.com",
+        text: "hello",
+        created: "2026-02-24T20:00:00.000Z",
+      })
+    );
+
+    await tracker.waitForAll();
+    expect(chat.processMessage).toHaveBeenCalledTimes(1);
   });
 });
 

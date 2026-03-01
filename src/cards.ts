@@ -1,6 +1,5 @@
 import {
   createEmojiConverter,
-  mapButtonStyle,
   cardToFallbackText as sharedCardToFallbackText,
 } from "@chat-adapter/shared";
 import type {
@@ -30,6 +29,7 @@ export interface WebexAdaptiveCard {
 const ADAPTIVE_CARD_SCHEMA =
   "http://adaptivecards.io/schemas/adaptive-card.json";
 const ADAPTIVE_CARD_VERSION = "1.3";
+type WebexButtonStyle = "positive" | "destructive";
 
 export function cardToWebexAdaptiveCard(card: CardElement): WebexAdaptiveCard {
   const body: Array<Record<string, unknown>> = [];
@@ -190,7 +190,7 @@ function convertButton(button: ButtonElement): Record<string, unknown> {
     data,
   };
 
-  const style = mapButtonStyle(button.style, "teams");
+  const style = mapWebexButtonStyle(button.style);
   if (style) {
     action.style = style;
   }
@@ -205,7 +205,7 @@ function convertLinkButton(button: LinkButtonElement): Record<string, unknown> {
     url: button.url,
   };
 
-  const style = mapButtonStyle(button.style, "teams");
+  const style = mapWebexButtonStyle(button.style);
   if (style) {
     action.style = style;
   }
@@ -281,6 +281,26 @@ function convertSection(section: SectionElement): ConvertResult {
   }
 
   return { body, actions };
+}
+
+/**
+ * Map SDK button styles to the Webex Adaptive Card style values.
+ *
+ * Note: In practice, other style values may still render in Webex clients.
+ * We intentionally align with the Webex Buttons & Cards Designer conventions:
+ * default (omitted), positive, destructive.
+ * See: https://developer.webex.com/buttons-and-cards-designer
+ */
+function mapWebexButtonStyle(
+  style: ButtonElement["style"]
+): WebexButtonStyle | undefined {
+  if (style === "primary") {
+    return "positive";
+  }
+  if (style === "danger") {
+    return "destructive";
+  }
+  return undefined;
 }
 
 export function cardToFallbackText(card: CardElement): string {

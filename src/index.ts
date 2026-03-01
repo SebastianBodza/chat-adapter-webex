@@ -168,21 +168,27 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
       return new Response("ok", { status: 200 });
     }
 
-    try {
-      if (payload.resource === "messages" && payload.event === "created") {
-        await this.handleMessageCreatedWebhook(payload, options);
-      } else if (
-        payload.resource === "attachmentActions" &&
-        payload.event === "created"
-      ) {
-        await this.handleAttachmentActionWebhook(payload, options);
+    const processTask = (async () => {
+      try {
+        if (payload.resource === "messages" && payload.event === "created") {
+          await this.handleMessageCreatedWebhook(payload, options);
+        } else if (
+          payload.resource === "attachmentActions" &&
+          payload.event === "created"
+        ) {
+          await this.handleAttachmentActionWebhook(payload, options);
+        }
+      } catch (error) {
+        this.logger.error("Error handling Webex webhook", {
+          resource: payload.resource,
+          event: payload.event,
+          error,
+        });
       }
-    } catch (error) {
-      this.logger.error("Error handling Webex webhook", {
-        resource: payload.resource,
-        event: payload.event,
-        error,
-      });
+    })();
+
+    if (options?.waitUntil) {
+      options.waitUntil(processTask);
     }
 
     return new Response("ok", { status: 200 });
