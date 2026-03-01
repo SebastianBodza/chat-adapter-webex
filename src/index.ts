@@ -78,12 +78,19 @@ interface WebexModalState {
   viewId: string;
 }
 
+/** Configuration options for the Webex adapter. */
 export interface WebexAdapterConfig {
+  /** Webex API base URL (default: `"https://webexapis.com/v1"`). */
   baseUrl?: string;
+  /** Bot access token from the Webex Developer Portal. */
   botToken: string;
+  /** Webex person ID of the bot. When provided, the `/people/me` call is skipped during initialization. */
   botUserId?: string;
+  /** Logger instance used by the adapter. */
   logger: Logger;
+  /** Bot display name (default: `"webex-bot"`, overridden by the bot's Webex profile). */
   userName?: string;
+  /** Shared secret for HMAC-SHA1 webhook signature verification. */
   webhookSecret?: string;
 }
 
@@ -216,7 +223,7 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
       this.roomTypeCache.set(message.roomId, message.roomType);
     }
 
-    const rootMessageId = message.parentId || message.id;
+    const rootMessageId = this.getRootMessageId(message);
     const threadId = this.encodeThreadId({
       roomId: message.roomId,
       rootMessageId,
@@ -245,7 +252,11 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
       return;
     }
 
-    const rootMessageId = message.parentId || message.id;
+    if (message.roomType) {
+      this.roomTypeCache.set(message.roomId, message.roomType);
+    }
+
+    const rootMessageId = this.getRootMessageId(message);
     const threadId = this.encodeThreadId({
       roomId: message.roomId,
       rootMessageId,
@@ -835,7 +846,10 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
         { method: "GET" }
       );
       const { roomId } = this.decodeThreadId(threadId);
-      const root = message.parentId || message.id;
+      if (message.roomType) {
+        this.roomTypeCache.set(message.roomId, message.roomType);
+      }
+      const root = this.getRootMessageId(message);
       const derivedThreadId = this.encodeThreadId({
         roomId,
         rootMessageId: root,
@@ -923,8 +937,9 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
     const pageSize = Math.min(MAX_WEBEX_PAGE_SIZE, Math.max(limit * 3, 50));
     const matched: WebexMessage[] = [];
     let cursor = options.cursor;
+    const seenCursors = new Set<string>();
 
-    for (let i = 0; i < 20 && matched.length < limit; i++) {
+    while (matched.length < limit) {
       const items = await this.listRoomMessagesPage(roomId, pageSize, cursor);
       if (items.length === 0) {
         break;
@@ -947,7 +962,13 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
       if (!oldest?.id) {
         break;
       }
-      cursor = oldest.id;
+
+      const nextCursor = oldest.id;
+      if (cursor === nextCursor || seenCursors.has(nextCursor)) {
+        break;
+      }
+      seenCursors.add(nextCursor);
+      cursor = nextCursor;
     }
 
     const selected = matched.slice(0, limit);
@@ -969,7 +990,7 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
     options: FetchOptions
   ): Promise<FetchResult<WebexMessage>> {
     const limit = options.limit || 50;
-    const all = await this.collectMatchedMessages(roomId, matcher, 2000);
+    const all = await this.collectMatchedMessages(roomId, matcher);
     const chronological = [...all].reverse();
 
     let startIndex = 0;
@@ -996,13 +1017,13 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
 
   private async collectMatchedMessages(
     roomId: string,
-    matcher: (message: WebexMessage) => boolean,
-    maxMessages: number
+    matcher: (message: WebexMessage) => boolean
   ): Promise<WebexMessage[]> {
     const collected: WebexMessage[] = [];
     let cursor: string | undefined;
+    const seenCursors = new Set<string>();
 
-    for (let i = 0; i < 50 && collected.length < maxMessages; i++) {
+    while (true) {
       const items = await this.listRoomMessagesPage(roomId, MAX_WEBEX_PAGE_SIZE, cursor);
       if (items.length === 0) {
         break;
@@ -1011,9 +1032,6 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
       for (const item of items) {
         if (matcher(item)) {
           collected.push(item);
-          if (collected.length >= maxMessages) {
-            break;
-          }
         }
       }
 
@@ -1025,7 +1043,13 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
       if (!oldest?.id) {
         break;
       }
-      cursor = oldest.id;
+
+      const nextCursor = oldest.id;
+      if (cursor === nextCursor || seenCursors.has(nextCursor)) {
+        break;
+      }
+      seenCursors.add(nextCursor);
+      cursor = nextCursor;
     }
 
     return collected;
@@ -1042,11 +1066,9 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
     }
 
     const limit = options.limit || 50;
-    const maxMessages = Math.min(limit * 8, 1000);
     const recent = await this.collectMatchedMessages(
       resolvedRoomId,
-      () => true,
-      maxMessages
+      () => true
     );
 
     const roots = new Map<string, WebexMessage>();
@@ -1266,7 +1288,10 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
   }
 
   parseMessage(raw: WebexMessage): Message<WebexMessage> {
-    const rootMessageId = raw.parentId || raw.id;
+    if (raw.roomType) {
+      this.roomTypeCache.set(raw.roomId, raw.roomType);
+    }
+    const rootMessageId = this.getRootMessageId(raw);
     const threadId = this.encodeThreadId({
       roomId: raw.roomId,
       rootMessageId,
@@ -1316,6 +1341,16 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
       attachments,
       isMention: this.isMessageMention(raw, text),
     });
+  }
+
+  private getRootMessageId(
+    message: Pick<WebexMessage, "id" | "parentId" | "roomId" | "roomType">
+  ): string {
+    const roomType = message.roomType || this.roomTypeCache.get(message.roomId);
+    if (roomType === "direct") {
+      return DM_ROOT_SENTINEL;
+    }
+    return message.parentId || message.id;
   }
 
   private isMessageMention(raw: WebexMessage, text: string): boolean {
@@ -1839,6 +1874,15 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
   }
 }
 
+/**
+ * Create a Webex adapter instance.
+ *
+ * Reads `WEBEX_BOT_TOKEN`, `WEBEX_WEBHOOK_SECRET`, `WEBEX_BASE_URL`, and
+ * `WEBEX_BOT_USERNAME` from environment variables as fallbacks when the
+ * corresponding config fields are not provided.
+ *
+ * @throws {ValidationError} When `botToken` is not provided and `WEBEX_BOT_TOKEN` is not set.
+ */
 export function createWebexAdapter(
   config?: Partial<
     Omit<WebexAdapterConfig, "botToken" | "logger"> & {

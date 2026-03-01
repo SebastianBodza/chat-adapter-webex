@@ -18,11 +18,17 @@ import type {
 
 const convertEmoji = createEmojiConverter("gchat");
 
+/** Webex Adaptive Card structure sent as a message attachment. */
 export interface WebexAdaptiveCard {
+  /** Adaptive Card JSON schema URL. */
   $schema: string;
+  /** Card type identifier. Always `"AdaptiveCard"`. */
   type: "AdaptiveCard";
+  /** Adaptive Card schema version. */
   version: string;
+  /** Card body elements (text blocks, images, input fields, etc.). */
   body: Array<Record<string, unknown>>;
+  /** Action buttons displayed at the bottom of the card. */
   actions?: Array<Record<string, unknown>>;
 }
 
@@ -31,6 +37,13 @@ const ADAPTIVE_CARD_SCHEMA =
 const ADAPTIVE_CARD_VERSION = "1.3";
 type WebexButtonStyle = "positive" | "destructive";
 
+/**
+ * Convert a Chat SDK `CardElement` into a Webex Adaptive Card.
+ *
+ * Maps title, subtitle, image, text, fields, sections, dividers, buttons,
+ * link-buttons, selects, and radio selects into their Adaptive Card
+ * equivalents. Actions are limited to 20 items.
+ */
 export function cardToWebexAdaptiveCard(card: CardElement): WebexAdaptiveCard {
   const body: Array<Record<string, unknown>> = [];
   const actions: Array<Record<string, unknown>> = [];
@@ -303,6 +316,10 @@ function mapWebexButtonStyle(
   return undefined;
 }
 
+/**
+ * Convert a Chat SDK `CardElement` into plain-text fallback for clients
+ * that cannot render Adaptive Cards.
+ */
 export function cardToFallbackText(card: CardElement): string {
   return sharedCardToFallbackText(card, {
     boldFormat: "**",
