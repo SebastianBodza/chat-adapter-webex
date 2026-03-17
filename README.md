@@ -65,7 +65,7 @@ bot.onNewMention(async (thread, message) => {
    - **Secret:** a random string — this is your `WEBEX_WEBHOOK_SECRET`
 6. Add the bot to a Webex space and mention it to verify the integration.
 
-> See the [Webex Webhooks Guide](https://developer.webex.com/docs/webhooks) for details on webhook registration.
+> See the [Webex Webhooks Guide](https://developer.webex.com/messaging/docs/api/guides/webhooks) for details on webhook registration.
 
 ## Features
 
