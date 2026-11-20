@@ -37,8 +37,6 @@ describe("history, threads and channel metadata", () => {
       h.api.addMessage({ roomId: DIRECT, personId: index % 2 ? ALICE.id : BOT.id, text: `m${index}` });
     }
     const threadId = h.adapter.encodeThreadId({ roomId: DIRECT, rootMessageId: "root" });
-    // Seed the room type cache the same way an inbound DM webhook would.
-    h.adapter.parseMessage({ id: "seed", roomId: DIRECT, roomType: "direct" });
 
     const messages = await collect(h.chat.channel(h.adapter.channelIdFromThreadId(threadId)).messages);
     expect(messages).toHaveLength(230);
@@ -160,9 +158,16 @@ describe("history, threads and channel metadata", () => {
     expect(h.api.requestsTo("GET", /^\/rooms\//)).toHaveLength(0);
   });
 
-  it("fetchMessage returns null for deleted messages", async () => {
-    const threadId = h.adapter.encodeThreadId({ roomId: GROUP, rootMessageId: "gone" });
-    expect(await h.adapter.fetchMessage(threadId, "gone")).toBeNull();
+  it("fetchMessage returns the message, then null after it was deleted", async () => {
+    const message = h.api.addMessage({ roomId: GROUP, personId: BOT.id, text: "temporary" });
+    const threadId = h.adapter.encodeThreadId({ roomId: GROUP, rootMessageId: message.id });
+
+    expect((await h.adapter.fetchMessage(threadId, message.id))?.text).toBe("temporary");
+
+    await h.adapter.deleteMessage(threadId, message.id);
+
+    expect(h.api.requestsTo("DELETE", `/messages/${message.id}`)).toHaveLength(1);
+    expect(await h.adapter.fetchMessage(threadId, message.id)).toBeNull();
   });
 });
 

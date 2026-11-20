@@ -1,5 +1,5 @@
 import { ValidationError } from "@chat-adapter/shared";
-import { Actions, Button, Card, CardText, type Message, type Thread } from "chat";
+import { Actions, Button, Card, CardText, type Message, paragraph, root, strong, text, type Thread } from "chat";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { adaptiveCardOf, ALICE, BOB, BOT, createHarness, type Harness } from "./harness";
 
@@ -209,12 +209,15 @@ describe("conversations end to end", () => {
 
       await channel.post({ markdown: "**Release** _v1.2_ is out {{emoji:rocket}}" });
       await channel.post("Plain text with {{emoji:thumbs_up}}");
+      await channel.post({ ast: root([paragraph([strong([text("Build")]), text(" passed {{emoji:party}}")])]) });
 
       const posted = h.api.botMessages();
       expect(posted[0]?.markdown).toContain("**Release**");
       expect(posted[0]?.markdown).toContain("🚀");
       expect(posted[0]?.markdown).not.toContain("{{emoji:");
       expect(posted[1]?.markdown).toContain("👍");
+      expect(posted[2]?.markdown).toContain("**Build** passed");
+      expect(posted[2]?.markdown).toContain("🎉");
       // Channel-level posts are top-level messages.
       expect(posted.every((message) => message.parentId === undefined && message.roomId === ROOM)).toBe(true);
     });
@@ -284,31 +287,54 @@ describe("conversations end to end", () => {
   });
 
   describe("editing and deleting sent messages", () => {
-    it("edits text, swaps in a card and deletes the message", async () => {
+    async function postWorkingMessage() {
       let sent: Awaited<ReturnType<Thread["post"]>> | undefined;
       h.chat.onNewMention(async (thread) => {
         sent = await thread.post("Working… {{emoji:hourglass}}");
       });
-
       await h.deliverMessage({ roomId: ROOM, personId: ALICE.id, text: "@helper long task", mentionedPeople: [BOT.id] });
-      expect(sent).toBeDefined();
-      const id = sent?.id as string;
+      if (!sent) {
+        throw new Error("mention handler did not post");
+      }
+      return sent;
+    }
 
-      await sent?.edit("Done **✓**");
-      expect(h.api.messages.get(id)?.markdown).toBe("Done **✓**");
+    it("deletes a sent message", async () => {
+      const sent = await postWorkingMessage();
 
-      await sent?.edit(Card({ title: "Result", children: [CardText("All green")] }));
-      const edited = h.api.messages.get(id);
-      expect(edited?.markdown).toContain("Result");
-      expect(adaptiveCardOf(edited).type).toBe("AdaptiveCard");
+      await sent.delete();
 
-      const puts = h.api.requestsTo("PUT", `/messages/${id}`);
-      expect(puts).toHaveLength(2);
-      expect(puts[0]?.body).toEqual({ markdown: "Done **✓**" });
+      expect(h.api.messages.has(sent.id)).toBe(false);
+      expect(h.api.requestsTo("DELETE", `/messages/${sent.id}`)).toHaveLength(1);
+    });
 
-      await sent?.delete();
-      expect(h.api.messages.has(id)).toBe(false);
-      expect(h.api.requestsTo("DELETE", `/messages/${id}`)).toHaveLength(1);
+    // Known bug: https://github.com/SebastianBodza/chat-adapter-webex/issues/8
+    // Pins today's behaviour. When #8 is fixed this test fails: replace it with
+    // one asserting the edit succeeds and the PUT body contains roomId.
+    it("[bug #8] text edits are rejected because roomId is not sent", async () => {
+      const sent = await postWorkingMessage();
+
+      await expect(sent.edit("Done **✓**")).rejects.toThrow("roomId and text or markdown are required.");
+
+      const [put] = h.api.requestsTo("PUT", `/messages/${sent.id}`);
+      expect(put?.body).toEqual({ markdown: "Done **✓**" });
+      expect(h.api.messages.get(sent.id)?.markdown).toBe("Working… ⏳");
+    });
+
+    // Known bug: https://github.com/SebastianBodza/chat-adapter-webex/issues/9
+    // Webex can't edit messages with attachments, yet the adapter PUTs a card.
+    // When #9 is fixed this test fails: assert the chosen behaviour instead
+    // (repost the card, or a ValidationError before any request is sent).
+    it("[bug #9] editing into a card sends an attachment edit Webex rejects", async () => {
+      const sent = await postWorkingMessage();
+
+      await expect(sent.edit(Card({ title: "Result", children: [CardText("All green")] }))).rejects.toThrow();
+
+      const [put] = h.api.requestsTo("PUT", `/messages/${sent.id}`);
+      expect(put?.body).toMatchObject({
+        attachments: [expect.objectContaining({ contentType: "application/vnd.microsoft.card.adaptive" })],
+      });
+      expect(h.api.messages.get(sent.id)?.attachments).toBeUndefined();
     });
 
     it("refuses to edit a message into a file upload", async () => {

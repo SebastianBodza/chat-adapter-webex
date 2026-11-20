@@ -9,6 +9,10 @@
  * - Bots listing a group space without `mentionedPeople=me` get a 403.
  * - `POST /messages` with `toPersonId` creates (or reuses) a direct room.
  * - Messages accept either JSON or multipart (`files`) bodies.
+ * - Edits follow the documented rules: `roomId` + `text`/`markdown` are
+ *   required, messages with files or attachments can't be edited, only the
+ *   author can edit, and a message can be edited at most 10 times.
+ *   https://developer.webex.com/messaging/docs/api/v1/messages/edit-a-message
  */
 import type {
   WebexAttachmentAction,
@@ -36,8 +40,13 @@ export interface UploadedFile {
 }
 
 export interface StoredMessage extends WebexMessage {
+  editCount?: number;
+  updated?: string;
   uploadedFiles?: UploadedFile[];
 }
+
+/** Webex rejects the 11th edit of a message. */
+export const MAX_EDITS_PER_MESSAGE = 10;
 
 interface InjectedFailure {
   body?: unknown;
@@ -291,27 +300,35 @@ export class FakeWebexApi {
     const max = Math.min(Number(query.get("max") || 50), 100);
     const beforeMessage = query.get("beforeMessage");
 
+    // Newest first; insertion order breaks timestamp ties so the order is total.
+    const insertionOrder = new Map([...this.messages.keys()].map((id, index) => [id, index]));
     let items = [...this.messages.values()]
       .filter((message) => message.roomId === roomId)
-      .sort((a, b) => Date.parse(b.created ?? "") - Date.parse(a.created ?? ""));
+      .sort(
+        (a, b) =>
+          Date.parse(b.created ?? "") - Date.parse(a.created ?? "") ||
+          (insertionOrder.get(b.id) ?? 0) - (insertionOrder.get(a.id) ?? 0)
+      );
+
+    // The cursor is a position in the full room timeline, applied before any
+    // filter, so messages sharing the pivot's timestamp are never skipped.
+    if (beforeMessage) {
+      const pivotIndex = items.findIndex((message) => message.id === beforeMessage);
+      if (pivotIndex === -1) {
+        return webexError(404, "beforeMessage not found");
+      }
+      items = items.slice(pivotIndex + 1);
+    }
 
     if (mentionedOnly) {
       items = items.filter((message) => message.mentionedPeople?.includes(this.bot.id));
-    }
-
-    if (beforeMessage) {
-      const pivot = this.messages.get(beforeMessage);
-      if (!pivot) {
-        return webexError(404, "beforeMessage not found");
-      }
-      items = items.filter((message) => Date.parse(message.created ?? "") < Date.parse(pivot.created ?? ""));
     }
 
     return json({ items: items.slice(0, max).map((message) => this.publicMessage(message)) });
   }
 
   private async createMessage(body: unknown): Promise<Response> {
-    const fields = body instanceof FormData ? this.formFields(body) : (body as Record<string, unknown>);
+    const fields = body instanceof FormData ? this.formFields(body) : ((body ?? {}) as Record<string, unknown>);
     const roomIdField = typeof fields.roomId === "string" ? fields.roomId : undefined;
     const toPersonId = typeof fields.toPersonId === "string" ? fields.toPersonId : undefined;
 
@@ -349,7 +366,8 @@ export class FakeWebexApi {
     if (body instanceof FormData) {
       for (const entry of body.getAll("files")) {
         if (entry instanceof File) {
-          uploadedFiles.push({ name: entry.name, type: entry.type, bytes: new Uint8Array(await entry.arrayBuffer()) });
+          const bytes = new Uint8Array(await entry.arrayBuffer());
+          uploadedFiles.push({ name: entry.name, type: entry.type, bytes });
         }
       }
     }
@@ -365,7 +383,8 @@ export class FakeWebexApi {
       attachments: Array.isArray(fields.attachments)
         ? (fields.attachments as StoredMessage["attachments"])
         : undefined,
-      files: uploadedFiles.map((file) => `${FILE_BASE_URL}/uploaded/${file.name}`),
+      // Uploaded files become downloadable content URLs, like Webex `files`.
+      files: uploadedFiles.map((file) => this.addFile(file.name, file.bytes, file.type || "application/octet-stream")),
       uploadedFiles: uploadedFiles.length > 0 ? uploadedFiles : undefined,
     });
 
@@ -374,19 +393,35 @@ export class FakeWebexApi {
 
   private editMessage(message: StoredMessage, body: unknown): Response {
     const fields = (body ?? {}) as Record<string, unknown>;
-    if (typeof fields.markdown === "string") {
-      message.markdown = fields.markdown;
-      message.text = fields.markdown;
+    const markdown = typeof fields.markdown === "string" ? fields.markdown : undefined;
+    const text = typeof fields.text === "string" ? fields.text : undefined;
+
+    if (typeof fields.roomId !== "string" || (markdown === undefined && text === undefined)) {
+      return webexError(400, "roomId and text or markdown are required.");
     }
-    if (Array.isArray(fields.attachments)) {
-      message.attachments = fields.attachments as StoredMessage["attachments"];
+    if (fields.roomId !== message.roomId) {
+      return webexError(400, "roomId does not match the message.");
     }
-    (message as StoredMessage & { updated?: string }).updated = this.tick();
+    if (message.personId !== this.bot.id) {
+      return webexError(403, "You can only edit your own messages.");
+    }
+    const hasAttachments = (message.attachments?.length ?? 0) > 0 || (message.files?.length ?? 0) > 0;
+    if (hasAttachments || (Array.isArray(fields.attachments) && fields.attachments.length > 0)) {
+      return webexError(400, "Editing messages with files or attachments is not supported.");
+    }
+    if ((message.editCount ?? 0) >= MAX_EDITS_PER_MESSAGE) {
+      return webexError(400, "The maximum number of edits for this message has been reached.");
+    }
+
+    message.markdown = markdown;
+    message.text = text ?? markdown;
+    message.editCount = (message.editCount ?? 0) + 1;
+    message.updated = this.tick();
     return json(this.publicMessage(message));
   }
 
   private publicMessage(message: StoredMessage): WebexMessage {
-    const { uploadedFiles: _uploaded, ...rest } = message;
+    const { uploadedFiles: _uploaded, editCount: _edits, ...rest } = message;
     return {
       ...rest,
       files: rest.files && rest.files.length > 0 ? rest.files : undefined,

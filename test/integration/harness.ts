@@ -112,9 +112,15 @@ export function createHarness(options: HarnessOptions = {}) {
     return response;
   };
 
+  // Sign with whatever secret the adapter was configured with (unsigned if none).
+  const configuredSecret =
+    options.adapter && "webhookSecret" in options.adapter
+      ? (options.adapter.webhookSecret ?? null)
+      : WEBHOOK_SECRET;
+
   const sendWebhook = async (
     payload: unknown,
-    signWith: string | null = WEBHOOK_SECRET
+    signWith: string | null = configuredSecret
   ): Promise<Response> => {
     const body = JSON.stringify(payload);
     const headers: Record<string, string> = {};
