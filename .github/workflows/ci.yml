@@ -5,9 +5,6 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
-  schedule:
-    # Weekly run so a new `chat` release is caught even without new commits.
-    - cron: "0 6 * * 1"
 
 permissions:
   contents: read
@@ -93,7 +90,7 @@ jobs:
           npm init -y >/dev/null
           npm pkg set type=module
           # Pin `chat` to the lockfile version so the smoke test is deterministic;
-          # newer releases are covered by the compat job.
+          # real-world resolution against other chat versions is covered by compat.yml.
           CHAT_VERSION=$(node -p 'require("${{ github.workspace }}/package-lock.json").packages["node_modules/chat"].version')
           npm install --no-audit --no-fund "$RUNNER_TEMP"/bitbasti-chat-adapter-webex-*.tgz "chat@$CHAT_VERSION"
           node --input-type=module -e '
@@ -105,36 +102,6 @@ jobs:
             if (adapter.name !== "webex") throw new Error("unexpected adapter name");
             console.log("packed package imports cleanly");
           '
-
-  compat:
-    name: Compat (chat ${{ matrix.chat }})
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    strategy:
-      fail-fast: false
-      matrix:
-        # minimum = lower bound of the peerDependencies range, latest = newest on npm.
-        chat: [minimum, latest]
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: npm
-      - run: npm ci
-      - name: Install chat SDK (${{ matrix.chat }})
-        run: |
-          if [ "${{ matrix.chat }}" = "minimum" ]; then
-            VERSION=$(node -p 'require("./package.json").peerDependencies.chat.replace(/^[^0-9]*/, "")')
-          else
-            VERSION=$(npm view chat version)
-          fi
-          echo "Testing against chat@$VERSION"
-          echo "### chat@$VERSION" >> "$GITHUB_STEP_SUMMARY"
-          npm install --no-save --no-audit --no-fund --legacy-peer-deps \
-            "chat@$VERSION" "@chat-adapter/shared@$VERSION" "@chat-adapter/state-memory@$VERSION"
-      - run: npm run typecheck
-      - run: npx vitest run
 
   audit:
     name: Dependency audit

@@ -1,0 +1,74 @@
+name: Compat
+
+# Installs the packed package into an empty project with a given `chat`
+# version and lets npm resolve everything else, exactly like a user install,
+# then runs the integration suite against the built package.
+#
+# Kept out of ci.yml on purpose: results depend on what is published on npm
+# right now, so a new upstream release must not turn unrelated PRs red.
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      chat:
+        description: "Extra chat version to test (e.g. 5.0.0-beta.1). Leave empty for minimum + latest only."
+        required: false
+  pull_request:
+    # Dependency bumps (incl. Dependabot) are exactly when this should run.
+    paths:
+      - package.json
+      - package-lock.json
+      - scripts/consumer-compat.sh
+      - .github/workflows/compat.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  consumer:
+    name: Consumer install (chat ${{ matrix.chat }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        # minimum = lower bound of peerDependencies.chat, latest = newest on npm
+        chat: ${{ fromJSON(inputs.chat && format('["minimum","latest","{0}"]', inputs.chat) || '["minimum","latest"]') }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Install as a consumer and run integration tests
+        run: scripts/consumer-compat.sh "${{ matrix.chat }}" "$RUNNER_TEMP/compat"
+
+  report:
+    name: Report scheduled failure
+    needs: consumer
+    if: failure() && github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Open or update tracking issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          LATEST=$(npm view chat version)
+          TITLE="Compat: adapter fails against chat SDK (latest: $LATEST)"
+          BODY="The weekly consumer-install compatibility run failed: $RUN_URL"
+          EXISTING=$(gh issue list --state open --search "\"$TITLE\" in:title" --json number --jq '.[0].number')
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "$BODY"
+          else
+            gh issue create --title "$TITLE" --body "$BODY"
+          fi
