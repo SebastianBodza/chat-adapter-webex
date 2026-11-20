@@ -58,15 +58,17 @@ describe("conversations end to end", () => {
     }
   });
 
-  it("keeps a reply to a reply in the root thread", async () => {
-    const threadIds: string[] = [];
-    h.chat.onNewMention(async (thread) => {
-      threadIds.push(thread.id);
+  it("keeps follow-up mentions inside an existing thread in that thread", async () => {
+    // Webex threads are one level deep: every reply (even one answering another
+    // reply in the client) carries the root message as its parentId.
+    const events: Array<{ kind: "mention" | "subscribed"; threadId: string; text: string }> = [];
+    h.chat.onNewMention(async (thread, message) => {
+      events.push({ kind: "mention", threadId: thread.id, text: message.text });
       await thread.subscribe();
     });
-    h.chat.onSubscribedMessage(async (thread) => {
-      threadIds.push(thread.id);
-      await thread.post("ack");
+    h.chat.onSubscribedMessage(async (thread, message) => {
+      events.push({ kind: "subscribed", threadId: thread.id, text: message.text });
+      await thread.post(`ack: ${message.text}`);
     });
 
     const { message: root } = await h.deliverMessage({
@@ -76,9 +78,26 @@ describe("conversations end to end", () => {
       mentionedPeople: [BOT.id],
     });
     await h.deliverMessage({ roomId: ROOM, parentId: root.id, personId: BOB.id, text: "@helper more", mentionedPeople: [BOT.id] });
+    await h.deliverMessage({ roomId: ROOM, parentId: root.id, personId: ALICE.id, text: "@helper and more", mentionedPeople: [BOT.id] });
 
-    expect(new Set(threadIds).size).toBe(1);
-    expect(h.api.botMessages()[0]?.parentId).toBe(root.id);
+    const rootThreadId = h.adapter.encodeThreadId({ roomId: ROOM, rootMessageId: root.id });
+    expect(events).toEqual([
+      { kind: "mention", threadId: rootThreadId, text: "@helper start" },
+      { kind: "subscribed", threadId: rootThreadId, text: "@helper more" },
+      { kind: "subscribed", threadId: rootThreadId, text: "@helper and more" },
+    ]);
+    const replies = h.api.botMessages();
+    expect(replies.map((message) => message.markdown)).toEqual(["ack: @helper more", "ack: @helper and more"]);
+    expect(replies.every((message) => message.parentId === root.id)).toBe(true);
+  });
+
+  it("rejects nested replies the way Webex does", async () => {
+    const root = h.api.addMessage({ roomId: ROOM, personId: ALICE.id, text: "root" });
+    const reply = h.api.addMessage({ roomId: ROOM, parentId: root.id, personId: BOB.id, text: "reply" });
+
+    await expect(
+      h.adapter.postMessage(h.adapter.encodeThreadId({ roomId: ROOM, rootMessageId: reply.id }), "nested")
+    ).rejects.toThrow("Replies to replies are not supported.");
   });
 
   it("isolates two concurrent threads in the same space", async () => {

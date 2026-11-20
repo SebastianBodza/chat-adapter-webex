@@ -216,7 +216,7 @@ describe("webhook ingress", () => {
     expect(attachments[0]).toMatchObject({ type: "image", name: "diagram.png", mimeType: "image/png", url: fileUrl });
 
     const data = await attachments[0]?.fetchData?.();
-    expect(data && [...data]).toEqual([0x89, 0x50, 0x4e, 0x47]);
+    expect(data && [...new Uint8Array(data)]).toEqual([0x89, 0x50, 0x4e, 0x47]);
     const download = h.api.requests.find((request) => request.url === fileUrl);
     expect(download?.headers.get("authorization")).toBe("Bearer integration-bot-token");
   });

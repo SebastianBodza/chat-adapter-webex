@@ -237,6 +237,10 @@ describe("Webex API error mapping", () => {
     });
 
     expect(response.status).toBe(200);
+    // The handler really tried to reply exactly once, and the failure did not leak.
+    const attempts = h.api.requestsTo("POST", "/messages");
+    expect(attempts).toHaveLength(1);
+    expect(attempts[0]?.body).toMatchObject({ roomId: GROUP, markdown: "will fail" });
     expect(h.api.botMessages()).toHaveLength(0);
   });
 });
