@@ -142,7 +142,8 @@ export class FakeWebexApi {
   }
 
   addFile(name: string, bytes: Uint8Array, contentType: string): string {
-    const url = `${FILE_BASE_URL}/${this.nextId("file")}/${name}`;
+    // Canonical (encoded) URL, so it matches `request.url` after URL normalisation.
+    const url = new URL(`${FILE_BASE_URL}/${this.nextId("file")}/${encodeURIComponent(name)}`).href;
     this.files.set(url, { bytes, contentType });
     return url;
   }

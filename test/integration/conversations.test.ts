@@ -1,7 +1,7 @@
 import { ValidationError } from "@chat-adapter/shared";
 import { Actions, Button, Card, CardText, type Message, paragraph, root, strong, text, type Thread } from "chat";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { adaptiveCardOf, ALICE, BOB, BOT, createHarness, type Harness } from "./harness";
+import { adaptiveCardOf, ALICE, BOB, BOT, BOT_TOKEN, createHarness, type Harness } from "./harness";
 
 const ROOM = "room-engineering";
 
@@ -256,7 +256,7 @@ describe("conversations end to end", () => {
       h.chat.onNewMention(async (thread) => {
         await thread.post({
           markdown: "Here is the report",
-          files: [{ filename: "report.csv", mimeType: "text/csv", data: Buffer.from("a,b\n1,2\n") }],
+          files: [{ filename: "q3 report.csv", mimeType: "text/csv", data: Buffer.from("a,b\n1,2\n") }],
         });
       });
 
@@ -267,8 +267,15 @@ describe("conversations end to end", () => {
       const [posted] = h.api.botMessages();
       expect(posted).toMatchObject({ roomId: ROOM, parentId: root.id, markdown: "Here is the report" });
       expect(posted?.uploadedFiles).toHaveLength(1);
-      expect(posted?.uploadedFiles?.[0]).toMatchObject({ name: "report.csv", type: "text/csv" });
+      expect(posted?.uploadedFiles?.[0]).toMatchObject({ name: "q3 report.csv", type: "text/csv" });
       expect(new TextDecoder().decode(posted?.uploadedFiles?.[0]?.bytes)).toBe("a,b\n1,2\n");
+
+      // The uploaded file is downloadable from its content URL, even with a space in its name.
+      const fileUrl = posted?.files?.[0] ?? "";
+      expect(fileUrl).toMatch(/\/q3%20report\.csv$/);
+      const download = await fetch(fileUrl, { headers: { authorization: `Bearer ${BOT_TOKEN}` } });
+      expect(download.status).toBe(200);
+      expect(await download.text()).toBe("a,b\n1,2\n");
     });
 
     it("rejects multiple files and card+file combinations before calling Webex", async () => {
@@ -328,13 +335,26 @@ describe("conversations end to end", () => {
     it("[bug #9] editing into a card sends an attachment edit Webex rejects", async () => {
       const sent = await postWorkingMessage();
 
-      await expect(sent.edit(Card({ title: "Result", children: [CardText("All green")] }))).rejects.toThrow();
+      await expect(sent.edit(Card({ title: "Result", children: [CardText("All green")] }))).rejects.toThrow(
+        "roomId and text or markdown are required."
+      );
 
       const [put] = h.api.requestsTo("PUT", `/messages/${sent.id}`);
       expect(put?.body).toMatchObject({
         attachments: [expect.objectContaining({ contentType: "application/vnd.microsoft.card.adaptive" })],
       });
       expect(h.api.messages.get(sent.id)?.attachments).toBeUndefined();
+
+      // Independent of #8: even with roomId, Webex rejects this body for its attachments.
+      const replay = await fetch(put?.url ?? "", {
+        method: "PUT",
+        headers: { authorization: `Bearer ${BOT_TOKEN}`, "content-type": "application/json" },
+        body: JSON.stringify({ ...(put?.body as object), roomId: ROOM }),
+      });
+      expect(replay.status).toBe(400);
+      expect(await replay.json()).toMatchObject({
+        message: "Editing messages with files or attachments is not supported.",
+      });
     });
 
     it("refuses to edit a message into a file upload", async () => {
