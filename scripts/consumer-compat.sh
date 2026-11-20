@@ -14,12 +14,28 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TARGET="${1:?usage: consumer-compat.sh <minimum|latest|x.y.z> [work-dir]}"
 WORK="${2:-$(mktemp -d)}"
+mkdir -p "$WORK"
+WORK="$(cd "$WORK" && pwd)" # absolute: later steps run from other directories
+
+PEER_RANGE="$(node -p 'require(process.argv[1]).peerDependencies.chat' "$ROOT/package.json")"
+semver_eval() {
+  # Runs with ROOT's node_modules so `semver` resolves from the repo.
+  (cd "$ROOT" && node -e "const semver = require('semver'); $1" -- "${@:2}")
+}
 
 case "$TARGET" in
-  minimum) CHAT_VERSION="$(node -p 'require(process.argv[1]).peerDependencies.chat.replace(/^[^0-9]*/, "")' "$ROOT/package.json")" ;;
+  minimum) CHAT_VERSION="$(semver_eval 'console.log(semver.minVersion(process.argv[1]).version)' "$PEER_RANGE")" ;;
   latest) CHAT_VERSION="$(npm view chat version)" ;;
   *) CHAT_VERSION="$TARGET" ;;
 esac
+
+# A version outside the peer range would make a real `npm install` fail with
+# ERESOLVE, even if the tests below pass. Fail early with an actionable message.
+if ! semver_eval 'process.exit(semver.satisfies(process.argv[1], process.argv[2], { includePrerelease: true }) ? 0 : 1)' \
+  "$CHAT_VERSION" "$PEER_RANGE"; then
+  echo "::error::chat@$CHAT_VERSION is outside peerDependencies.chat ($PEER_RANGE). Users would hit ERESOLVE on install; widen the range in package.json once the adapter supports it." >&2
+  exit 1
+fi
 
 lock_version() {
   node -p 'require(process.argv[1]).packages["node_modules/" + process.argv[2]].version' "$ROOT/package-lock.json" "$1"
@@ -50,6 +66,7 @@ echo 'export * from "@bitbasti/chat-adapter-webex";' > "$APP/src/index.ts"
 echo 'export type * from "@bitbasti/chat-adapter-webex";' > "$APP/src/types.ts"
 
 echo "▶ resolved versions"
-npm ls chat @chat-adapter/shared @chat-adapter/state-memory --all || true
+# Fails on an invalid tree (missing/invalid peers), which users would hit too.
+npm ls chat @chat-adapter/shared @chat-adapter/state-memory --all
 
 npx vitest run test/integration

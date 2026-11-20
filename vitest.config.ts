@@ -16,6 +16,13 @@ export default defineConfig({
         branches: 80,
         functions: 95,
         lines: 90,
+        // The adapter itself gets its own gate so other files cannot mask a drop.
+        "src/index.ts": {
+          statements: 90,
+          branches: 80,
+          functions: 95,
+          lines: 90,
+        },
       },
     },
   },
