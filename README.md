@@ -2,6 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@bitbasti/chat-adapter-webex)](https://www.npmjs.com/package/@bitbasti/chat-adapter-webex)
 [![npm downloads](https://img.shields.io/npm/dm/@bitbasti/chat-adapter-webex)](https://www.npmjs.com/package/@bitbasti/chat-adapter-webex)
+[![CI](https://github.com/SebastianBodza/chat-adapter-webex/actions/workflows/ci.yml/badge.svg)](https://github.com/SebastianBodza/chat-adapter-webex/actions/workflows/ci.yml)
 
 Community Webex adapter for [Chat SDK](https://chat-sdk.dev/docs).
 
@@ -83,6 +84,21 @@ bot.onNewMention(async (thread, message) => {
 - Typing indicators are not available in the Webex Messaging API
 - Only one file upload per message is supported
 - Cards and file uploads cannot be combined in the same message
+
+## Development
+
+```bash
+npm ci
+npm run ci              # lint, typecheck, tests with coverage, build, publint
+npm run test:unit       # fast unit tests in src/
+npm run test:integration
+```
+
+Integration tests in `test/integration/` run the real `Chat` runtime and adapter
+against a stateful in-memory fake of the Webex REST API (`fake-webex-api.ts`),
+installed as the global `fetch`. Webhooks are signed exactly like Webex signs
+them, so the tests cover signature checks, message hydration, threading, DMs,
+cards, modals, file uploads, pagination and error mapping without network access.
 
 ## License
 
