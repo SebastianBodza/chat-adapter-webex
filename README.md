@@ -2,6 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@bitbasti/chat-adapter-webex)](https://www.npmjs.com/package/@bitbasti/chat-adapter-webex)
 [![npm downloads](https://img.shields.io/npm/dm/@bitbasti/chat-adapter-webex)](https://www.npmjs.com/package/@bitbasti/chat-adapter-webex)
+[![CI](https://github.com/SebastianBodza/chat-adapter-webex/actions/workflows/ci.yml/badge.svg)](https://github.com/SebastianBodza/chat-adapter-webex/actions/workflows/ci.yml)
 
 Community Webex adapter for [Chat SDK](https://chat-sdk.dev/docs).
 
@@ -83,6 +84,29 @@ bot.onNewMention(async (thread, message) => {
 - Typing indicators are not available in the Webex Messaging API
 - Only one file upload per message is supported
 - Cards and file uploads cannot be combined in the same message
+
+## Development
+
+```bash
+npm ci
+npm run ci              # lint, typecheck, tests with coverage, build, publint
+npm run test:unit       # fast unit tests in src/
+npm run test:integration
+scripts/consumer-compat.sh minimum   # packed package + chat@<peer minimum>, npm resolves the rest
+scripts/consumer-compat.sh latest    # same against the newest chat on npm
+```
+
+Integration tests in `test/integration/` run the real `Chat` runtime and adapter
+against a stateful in-memory fake of the Webex REST API (`fake-webex-api.ts`),
+installed as the global `fetch`. Webhooks are signed exactly like Webex signs
+them, so the tests cover signature checks, message hydration, threading, DMs,
+cards, modals, file uploads, pagination and error mapping without network access.
+
+`consumer-compat.sh` installs the packed tarball into an empty project like a
+user would and runs the same integration suite against the built package. The
+`Compat` workflow runs it weekly, on dependency changes and on demand, and opens
+an issue when a scheduled run fails, so new `chat` releases are noticed early
+without making unrelated PRs fail.
 
 ## License
 
