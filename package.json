@@ -30,9 +30,6 @@
     "ci": "npm run lint && npm run typecheck && npm test && npm run build && npm run check:package",
     "clean": "rimraf dist coverage"
   },
-  "dependencies": {
-    "@chat-adapter/shared": "^4.15.0"
-  },
   "peerDependencies": {
     "chat": "^4.15.0"
   },

@@ -1,4 +1,3 @@
-import { createEmojiConverter } from "@chat-adapter/shared";
 import type {
   FieldsElement,
   ModalElement,
@@ -8,9 +7,9 @@ import type {
   TextElement,
   TextInputElement,
 } from "chat";
+import { convertEmoji } from "./shared";
 import type { WebexAdaptiveCard } from "./cards";
 
-const convertEmoji = createEmojiConverter("gchat");
 
 const ADAPTIVE_CARD_SCHEMA = "http://adaptivecards.io/schemas/adaptive-card.json";
 const ADAPTIVE_CARD_VERSION = "1.3";

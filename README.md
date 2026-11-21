@@ -78,6 +78,10 @@ bot.onNewMention(async (thread, message) => {
 - Thread support (parentId-based threading)
 - Webhook signature verification (HMAC-SHA1)
 
+### Errors
+
+Failed operations throw the adapter's error classes, exported from this package: `ValidationError`, `AuthenticationError`, `PermissionError`, `ResourceNotFoundError`, `AdapterRateLimitError` (with `retryAfter`) and `NetworkError`. They extend `AdapterError` and carry the same `name` and `code` values as the classes in `@chat-adapter/shared`. Branch on `error.code` (for example `"RATE_LIMITED"`) if you mix adapters.
+
 ### Limitations
 
 - Reactions are not supported by Webex bot tokens — `addReaction` / `removeReaction` throw `NotImplementedError`

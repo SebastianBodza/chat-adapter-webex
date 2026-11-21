@@ -1,4 +1,4 @@
-import { ValidationError } from "@chat-adapter/shared";
+import { ValidationError } from "../../src/index";
 import { Actions, Button, Card, CardText, type Message, paragraph, root, strong, text, type Thread } from "chat";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { StoredMessage } from "./fake-webex-api";
