@@ -1,0 +1,739 @@
+{
+  "label": "pr23",
+  "mode": "modal",
+  "worktree": "i8",
+  "results": [
+    {
+      "step": "modal submits",
+      "value": [
+        {
+          "viewId": "9faffc24-455c-46c9-88e7-183bf5e29105",
+          "values": {
+            "summary": "DB is slow"
+          }
+        }
+      ]
+    },
+    {
+      "step": "adapter error logs",
+      "value": []
+    }
+  ],
+  "exchanges": [
+    {
+      "at": "2026-11-21T00:23:03.144Z",
+      "request": {
+        "method": "GET",
+        "path": "/people/me"
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_77ffe323-305d-4bc4-b07b-35b226095d9a",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "emails": [
+            "chatadapterwebexe2e@webex.bot"
+          ],
+          "phoneNumbers": [],
+          "displayName": "chat-adapter-webex E2E",
+          "nickName": "chat-adapter-webex",
+          "userName": "chatadapterwebexe2e",
+          "avatar": "https://avatar-prod-us-east-2.webexcontent.com/Avtr~V1~71b6b34c-abff-4407-ac50-5e62323aed80/V1~b90b9ae64a0f2abf95f9c58f32ee047c0ca6cb75c2c5e4a5df9e9f5a20b6e160~6398e4b1e2f34d518dffa9bb98b08f70~80",
+          "orgId": "Y2lzY29zcGFyazovL3VzL09SR0FOSVpBVElPTi83MWI2YjM0Yy1hYmZmLTQ0MDctYWM1MC01ZTYyMzIzYWVkODA",
+          "created": "2026-11-21T00:14:53.991Z",
+          "status": "unknown",
+          "type": "bot"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:23:04.309Z",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "markdown": "**[pr23] #9 modal update E2E**\n\nClick the button, fill in the form and press Next. Step 2 should replace the form.",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[pr23] #9 modal update E2E",
+                    "weight": "Bolder",
+                    "size": "Medium",
+                    "wrap": true
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "Click the button, fill in the form and press Next. Step 2 should replace the form.",
+                    "wrap": true
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Report incident",
+                    "data": {
+                      "actionId": "report"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_1d5783e1-0234-4dd8-b7e1-ab9623c5ded3",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYjc5YjI4YjAtZTU0MS0xMWYxLTg1MWItMDU0ZmZmMWFjNjhm",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "[pr23] #9 modal update E2E Click the button, fill in the form and press Next. Step 2 should replace the form.",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[pr23] #9 modal update E2E",
+                    "weight": "Bolder",
+                    "size": "Medium",
+                    "wrap": true
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "Click the button, fill in the form and press Next. Step 2 should replace the form.",
+                    "wrap": true
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Report incident",
+                    "data": {
+                      "actionId": "report"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "**[pr23] #9 modal update E2E**\n\nClick the button, fill in the form and press Next. Step 2 should replace the form.",
+          "html": "<p><strong>[pr23] #9 modal update E2E</strong></p><p>Click the button, fill in the form and press Next. Step 2 should replace the form.</p>",
+          "created": "2026-11-21T00:23:04.123Z"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:23:04.709Z",
+      "request": {
+        "method": "GET",
+        "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYjc5YjI4YjAtZTU0MS0xMWYxLTg1MWItMDU0ZmZmMWFjNjhm"
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_c5ced291-e278-4d14-a08d-73afecf1137b",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYjc5YjI4YjAtZTU0MS0xMWYxLTg1MWItMDU0ZmZmMWFjNjhm",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "[pr23] #9 modal update E2E Click the button, fill in the form and press Next. Step 2 should replace the form.",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[pr23] #9 modal update E2E",
+                    "weight": "Bolder",
+                    "size": "Medium",
+                    "wrap": true
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "Click the button, fill in the form and press Next. Step 2 should replace the form.",
+                    "wrap": true
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Report incident",
+                    "data": {
+                      "actionId": "report"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "**[pr23] #9 modal update E2E**\n\nClick the button, fill in the form and press Next. Step 2 should replace the form.",
+          "html": "<p><strong>[pr23] #9 modal update E2E</strong></p><p>Click the button, fill in the form and press Next. Step 2 should replace the form.</p>",
+          "created": "2026-11-21T00:23:04.123Z"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:23:26.025Z",
+      "request": {
+        "method": "GET",
+        "path": "/attachment/actions/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL0FUVEFDSE1FTlRfQUNUSU9OL2M0NWY0OTUwLWU1NDEtMTFmMS05ZDAzLWQxYTBmOWZlNDgxMA"
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_20ddaf2b-3e65-41cd-8c9a-703b6fdb7276",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL0FUVEFDSE1FTlRfQUNUSU9OL2M0NWY0OTUwLWU1NDEtMTFmMS05ZDAzLWQxYTBmOWZlNDgxMA",
+          "type": "submit",
+          "messageId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYjc5YjI4YjAtZTU0MS0xMWYxLTg1MWItMDU0ZmZmMWFjNjhm",
+          "inputs": {
+            "actionId": "report"
+          },
+          "personId": "<user-personId>",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "created": "2026-11-21T00:23:25.541Z"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:23:26.241Z",
+      "request": {
+        "method": "GET",
+        "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYjc5YjI4YjAtZTU0MS0xMWYxLTg1MWItMDU0ZmZmMWFjNjhm"
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_e884746c-9aef-4d93-8f7b-f8a03b569428",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYjc5YjI4YjAtZTU0MS0xMWYxLTg1MWItMDU0ZmZmMWFjNjhm",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "[pr23] #9 modal update E2E Click the button, fill in the form and press Next. Step 2 should replace the form.",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[pr23] #9 modal update E2E",
+                    "weight": "Bolder",
+                    "size": "Medium",
+                    "wrap": true
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "Click the button, fill in the form and press Next. Step 2 should replace the form.",
+                    "wrap": true
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Report incident",
+                    "data": {
+                      "actionId": "report"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "**[pr23] #9 modal update E2E**\n\nClick the button, fill in the form and press Next. Step 2 should replace the form.",
+          "html": "<p><strong>[pr23] #9 modal update E2E</strong></p><p>Click the button, fill in the form and press Next. Step 2 should replace the form.</p>",
+          "created": "2026-11-21T00:23:04.123Z"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:23:26.430Z",
+      "request": {
+        "method": "GET",
+        "path": "/people/<user-personId>"
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_1045bbcd-b46d-4998-8f68-ae013dfaf0f1",
+        "body": {
+          "id": "<user-personId>",
+          "emails": [
+            "user@example.com"
+          ],
+          "phoneNumbers": [],
+          "displayName": "Sebastian Bodza",
+          "nickName": "Sebastian",
+          "firstName": "Sebastian",
+          "lastName": "Bodza",
+          "userName": "user@example.com",
+          "orgId": "Y2lzY29zcGFyazovL3VzL09SR0FOSVpBVElPTi83MWI2YjM0Yy1hYmZmLTQ0MDctYWM1MC01ZTYyMzIzYWVkODA",
+          "created": "2026-02-24T20:32:15.387Z",
+          "lastModified": "2026-02-28T00:04:19.090Z",
+          "timeZone": "Europe/Berlin",
+          "lastActivity": "2026-11-21T00:19:09.315Z",
+          "status": "active",
+          "type": "person",
+          "addresses": [
+            {
+              "country": "DE",
+              "locality": "",
+              "region": "",
+              "streetAddress": "",
+              "type": "work",
+              "postalCode": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:23:26.826Z",
+      "request": {
+        "method": "GET",
+        "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYjc5YjI4YjAtZTU0MS0xMWYxLTg1MWItMDU0ZmZmMWFjNjhm"
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_21b9362c-548c-4d48-bf4a-0bfc88d26c5c",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYjc5YjI4YjAtZTU0MS0xMWYxLTg1MWItMDU0ZmZmMWFjNjhm",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "[pr23] #9 modal update E2E Click the button, fill in the form and press Next. Step 2 should replace the form.",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[pr23] #9 modal update E2E",
+                    "weight": "Bolder",
+                    "size": "Medium",
+                    "wrap": true
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "Click the button, fill in the form and press Next. Step 2 should replace the form.",
+                    "wrap": true
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Report incident",
+                    "data": {
+                      "actionId": "report"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "**[pr23] #9 modal update E2E**\n\nClick the button, fill in the form and press Next. Step 2 should replace the form.",
+          "html": "<p><strong>[pr23] #9 modal update E2E</strong></p><p>Click the button, fill in the form and press Next. Step 2 should replace the form.</p>",
+          "created": "2026-11-21T00:23:04.123Z"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:23:27.445Z",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "markdown": "[pr23] Step 1: incident report\nPlease fill out this form card and click Next.",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[pr23] Step 1: incident report",
+                    "weight": "Bolder",
+                    "size": "Medium",
+                    "wrap": true
+                  },
+                  {
+                    "type": "Input.Text",
+                    "id": "summary",
+                    "label": "Summary",
+                    "isMultiline": false
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Next",
+                    "data": {
+                      "_chat_modal": "1",
+                      "_chat_modal_view_id": "9faffc24-455c-46c9-88e7-183bf5e29105",
+                      "_chat_modal_callback_id": "incident",
+                      "_chat_modal_context_id": "7fc4958b-64ad-4623-9faa-fb7cf3d9743f",
+                      "_chat_modal_private_metadata": "",
+                      "actionId": "__chat_modal_submit:9faffc24-455c-46c9-88e7-183bf5e29105",
+                      "_chat_modal_action": "submit"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "parentId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYjc5YjI4YjAtZTU0MS0xMWYxLTg1MWItMDU0ZmZmMWFjNjhm"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_e967cd60-dd03-4137-a3cf-b3a1806f286c",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYzU2MTllMjAtZTU0MS0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "[pr23] Step 1: incident report Please fill out this form card and click Next.",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[pr23] Step 1: incident report",
+                    "weight": "Bolder",
+                    "size": "Medium",
+                    "wrap": true
+                  },
+                  {
+                    "type": "Input.Text",
+                    "id": "summary",
+                    "label": "Summary",
+                    "isMultiline": false
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Next",
+                    "data": {
+                      "_chat_modal": "1",
+                      "_chat_modal_view_id": "9faffc24-455c-46c9-88e7-183bf5e29105",
+                      "_chat_modal_callback_id": "incident",
+                      "_chat_modal_context_id": "7fc4958b-64ad-4623-9faa-fb7cf3d9743f",
+                      "_chat_modal_private_metadata": "",
+                      "actionId": "__chat_modal_submit:9faffc24-455c-46c9-88e7-183bf5e29105",
+                      "_chat_modal_action": "submit"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "[pr23] Step 1: incident report\nPlease fill out this form card and click Next.",
+          "html": "<p>[pr23] Step 1: incident report<br>Please fill out this form card and click Next.</p>",
+          "created": "2026-11-21T00:23:27.234Z",
+          "parentId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYjc5YjI4YjAtZTU0MS0xMWYxLTg1MWItMDU0ZmZmMWFjNjhm"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:23:27.779Z",
+      "request": {
+        "method": "GET",
+        "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYzU2MTllMjAtZTU0MS0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0"
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_a27c2045-80cf-4dcb-89f2-8eccef002822",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYzU2MTllMjAtZTU0MS0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "[pr23] Step 1: incident report Please fill out this form card and click Next.",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[pr23] Step 1: incident report",
+                    "weight": "Bolder",
+                    "size": "Medium",
+                    "wrap": true
+                  },
+                  {
+                    "type": "Input.Text",
+                    "id": "summary",
+                    "label": "Summary",
+                    "isMultiline": false
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Next",
+                    "data": {
+                      "_chat_modal": "1",
+                      "_chat_modal_view_id": "9faffc24-455c-46c9-88e7-183bf5e29105",
+                      "_chat_modal_callback_id": "incident",
+                      "_chat_modal_context_id": "7fc4958b-64ad-4623-9faa-fb7cf3d9743f",
+                      "_chat_modal_private_metadata": "",
+                      "actionId": "__chat_modal_submit:9faffc24-455c-46c9-88e7-183bf5e29105",
+                      "_chat_modal_action": "submit"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "[pr23] Step 1: incident report\nPlease fill out this form card and click Next.",
+          "html": "<p>[pr23] Step 1: incident report<br>Please fill out this form card and click Next.</p>",
+          "created": "2026-11-21T00:23:27.234Z",
+          "parentId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYjc5YjI4YjAtZTU0MS0xMWYxLTg1MWItMDU0ZmZmMWFjNjhm"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:23:37.420Z",
+      "request": {
+        "method": "GET",
+        "path": "/attachment/actions/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL0FUVEFDSE1FTlRfQUNUSU9OL2NiMWEwMGYwLWU1NDEtMTFmMS05NDdjLTgzNGViNjFkZGM1ZQ"
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_dc5250e8-30ba-4a0f-a655-ac19a9b61f7e",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL0FUVEFDSE1FTlRfQUNUSU9OL2NiMWEwMGYwLWU1NDEtMTFmMS05NDdjLTgzNGViNjFkZGM1ZQ",
+          "type": "submit",
+          "messageId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYzU2MTllMjAtZTU0MS0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0",
+          "inputs": {
+            "_chat_modal": "1",
+            "_chat_modal_view_id": "9faffc24-455c-46c9-88e7-183bf5e29105",
+            "_chat_modal_callback_id": "incident",
+            "_chat_modal_context_id": "7fc4958b-64ad-4623-9faa-fb7cf3d9743f",
+            "_chat_modal_private_metadata": "",
+            "actionId": "__chat_modal_submit:9faffc24-455c-46c9-88e7-183bf5e29105",
+            "_chat_modal_action": "submit",
+            "summary": "DB is slow"
+          },
+          "personId": "<user-personId>",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "created": "2026-11-21T00:23:36.831Z"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:23:37.739Z",
+      "request": {
+        "method": "GET",
+        "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYzU2MTllMjAtZTU0MS0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0"
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_1ba52585-33d7-4000-8e15-c00cfb0e28c5",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYzU2MTllMjAtZTU0MS0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "[pr23] Step 1: incident report Please fill out this form card and click Next.",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[pr23] Step 1: incident report",
+                    "weight": "Bolder",
+                    "size": "Medium",
+                    "wrap": true
+                  },
+                  {
+                    "type": "Input.Text",
+                    "id": "summary",
+                    "label": "Summary",
+                    "isMultiline": false
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Next",
+                    "data": {
+                      "_chat_modal": "1",
+                      "_chat_modal_view_id": "9faffc24-455c-46c9-88e7-183bf5e29105",
+                      "_chat_modal_callback_id": "incident",
+                      "_chat_modal_context_id": "7fc4958b-64ad-4623-9faa-fb7cf3d9743f",
+                      "_chat_modal_private_metadata": "",
+                      "actionId": "__chat_modal_submit:9faffc24-455c-46c9-88e7-183bf5e29105",
+                      "_chat_modal_action": "submit"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "[pr23] Step 1: incident report\nPlease fill out this form card and click Next.",
+          "html": "<p>[pr23] Step 1: incident report<br>Please fill out this form card and click Next.</p>",
+          "created": "2026-11-21T00:23:27.234Z",
+          "parentId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYjc5YjI4YjAtZTU0MS0xMWYxLTg1MWItMDU0ZmZmMWFjNjhm"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:23:38.098Z",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYzU2MTllMjAtZTU0MS0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0",
+        "body": {
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "markdown": "[pr23] Step 2: confirm \"DB is slow\"\nPlease fill out this form card and click Confirm.",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[pr23] Step 2: confirm \"DB is slow\"",
+                    "weight": "Bolder",
+                    "size": "Medium",
+                    "wrap": true
+                  },
+                  {
+                    "type": "Input.Text",
+                    "id": "note",
+                    "label": "Anything else?",
+                    "isMultiline": false
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Confirm",
+                    "data": {
+                      "_chat_modal": "1",
+                      "_chat_modal_view_id": "9faffc24-455c-46c9-88e7-183bf5e29105",
+                      "_chat_modal_callback_id": "incident",
+                      "_chat_modal_context_id": "7fc4958b-64ad-4623-9faa-fb7cf3d9743f",
+                      "_chat_modal_private_metadata": "",
+                      "actionId": "__chat_modal_submit:9faffc24-455c-46c9-88e7-183bf5e29105",
+                      "_chat_modal_action": "submit"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_fc7f8221-ebcf-4bc5-a55d-ee19ade0d980",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYzU2MTllMjAtZTU0MS0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "[pr23] Step 2: confirm \"DB is slow\" Please fill out this form card and click Confirm.",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[pr23] Step 2: confirm \"DB is slow\"",
+                    "weight": "Bolder",
+                    "size": "Medium",
+                    "wrap": true
+                  },
+                  {
+                    "type": "Input.Text",
+                    "id": "note",
+                    "label": "Anything else?",
+                    "isMultiline": false
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Confirm",
+                    "data": {
+                      "_chat_modal": "1",
+                      "_chat_modal_view_id": "9faffc24-455c-46c9-88e7-183bf5e29105",
+                      "_chat_modal_callback_id": "incident",
+                      "_chat_modal_context_id": "7fc4958b-64ad-4623-9faa-fb7cf3d9743f",
+                      "_chat_modal_private_metadata": "",
+                      "actionId": "__chat_modal_submit:9faffc24-455c-46c9-88e7-183bf5e29105",
+                      "_chat_modal_action": "submit"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "[pr23] Step 2: confirm \"DB is slow\"\nPlease fill out this form card and click Confirm.",
+          "html": "<p>[pr23] Step 2: confirm \"DB is slow\"<br>Please fill out this form card and click Confirm.</p>",
+          "created": "2026-11-21T00:23:27.234Z",
+          "updated": "2026-11-21T00:23:37.927Z"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+src/cards.test.ts(42,47): error TS2345: Argument of type '{ readonly type: "card"; readonly title: "Deployment"; readonly subtitle: "Ready to proceed"; readonly children: readonly [{ readonly type: "text"; readonly content: "Approve the deployment?"; }, { readonly type: "actions"; readonly children: readonly [...]; }]; }' is not assignable to parameter of type 'CardElement'.
+  Types of property 'children' are incompatible.
+    The type 'readonly [{ readonly type: "text"; readonly content: "Approve the deployment?"; }, { readonly type: "actions"; readonly children: readonly [{ readonly type: "button"; readonly id: "approve"; readonly label: "Approve"; readonly value: "yes"; readonly style: "primary"; }, { ...; }]; }]' is 'readonly' and cannot be assigned to the mutable type 'CardChild[]'.
+src/cards.test.ts(75,47): error TS2345: Argument of type '{ readonly type: "card"; readonly title: "No style"; readonly children: readonly [{ readonly type: "actions"; readonly children: readonly [{ readonly type: "button"; readonly id: "plain"; readonly label: "Plain"; }]; }]; }' is not assignable to parameter of type 'CardElement'.
+  Types of property 'children' are incompatible.
+    The type 'readonly [{ readonly type: "actions"; readonly children: readonly [{ readonly type: "button"; readonly id: "plain"; readonly label: "Plain"; }]; }]' is 'readonly' and cannot be assigned to the mutable type 'CardChild[]'.
+src/cards.test.ts(217,19): error TS2352: Conversion of type '{ type: "actions"; children: { type: "select"; id: string; label: string; placeholder: string; options: { type: string; label: string; value: string; }[]; }[]; }' to type 'ActionsElement' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Types of property 'children' are incompatible.
+    Type '{ type: "select"; id: string; label: string; placeholder: string; options: { type: string; label: string; value: string; }[]; }' is not comparable to type 'ButtonElement | LinkButtonElement | SelectElement | RadioSelectElement'.
+      Types of property 'options' are incompatible.
+        Type '{ type: string; label: string; value: string; }[]' is not comparable to type 'SelectOptionElement[]'.
+          Object literal may only specify known properties, and 'type' does not exist in type 'SelectOptionElement'.
+src/cards.test.ts(257,19): error TS2352: Conversion of type '{ type: "actions"; children: { type: "radio_select"; id: string; label: string; options: { type: string; label: string; value: string; }[]; }[]; }' to type 'ActionsElement' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Types of property 'children' are incompatible.
+    Type '{ type: "radio_select"; id: string; label: string; options: { type: string; label: string; value: string; }[]; }' is not comparable to type 'ButtonElement | LinkButtonElement | SelectElement | RadioSelectElement'.
+      Types of property 'options' are incompatible.
+        Type '{ type: string; label: string; value: string; }[]' is not comparable to type 'SelectOptionElement[]'.
+          Object literal may only specify known properties, and 'type' does not exist in type 'SelectOptionElement'.
+src/cards.test.ts(289,19): error TS2352: Conversion of type '{ type: "actions"; children: { type: "select"; id: string; label: string; initialOption: string; options: { type: string; label: string; value: string; }[]; }[]; }' to type 'ActionsElement' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Types of property 'children' are incompatible.
+    Type '{ type: "select"; id: string; label: string; initialOption: string; options: { type: string; label: string; value: string; }[]; }' is not comparable to type 'ButtonElement | LinkButtonElement | SelectElement | RadioSelectElement'.
+      Types of property 'options' are incompatible.
+        Type '{ type: string; label: string; value: string; }[]' is not comparable to type 'SelectOptionElement[]'.
+          Object literal may only specify known properties, and 'type' does not exist in type 'SelectOptionElement'.
+src/cards.test.ts(318,19): error TS2352: Conversion of type '{ type: "actions"; children: { type: "select"; id: string; label: string; optional: false; options: { type: string; label: string; value: string; }[]; }[]; }' to type 'ActionsElement' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Types of property 'children' are incompatible.
+    Type '{ type: "select"; id: string; label: string; optional: false; options: { type: string; label: string; value: string; }[]; }' is not comparable to type 'ButtonElement | LinkButtonElement | SelectElement | RadioSelectElement'.
+      Types of property 'options' are incompatible.
+        Type '{ type: string; label: string; value: string; }[]' is not comparable to type 'SelectOptionElement[]'.
+          Object literal may only specify known properties, and 'type' does not exist in type 'SelectOptionElement'.
+src/cards.test.ts(442,41): error TS2345: Argument of type '{ readonly type: "card"; readonly title: "Alert"; readonly children: readonly [{ readonly type: "text"; readonly content: "Something happened."; }]; }' is not assignable to parameter of type 'CardElement'.
+  Types of property 'children' are incompatible.
+    The type 'readonly [{ readonly type: "text"; readonly content: "Something happened."; }]' is 'readonly' and cannot be assigned to the mutable type 'CardChild[]'.
+src/index.test.ts(25,3): error TS2322: Type '{ cache: Map<string, unknown>; connect: Mock<Procedure>; disconnect: Mock<Procedure>; subscribe: Mock<Procedure>; unsubscribe: Mock<...>; ... 6 more ...; delete: Mock<...>; }' is not assignable to type 'StateAdapter & { cache: Map<string, unknown>; }'.
+  Type '{ cache: Map<string, unknown>; connect: Mock<Procedure>; disconnect: Mock<Procedure>; subscribe: Mock<Procedure>; unsubscribe: Mock<...>; ... 6 more ...; delete: Mock<...>; }' is missing the following properties from type 'StateAdapter': appendToList, dequeue, enqueue, forceReleaseLock, and 3 more.
+src/integration.test.ts(316,12): error TS18047: 'ctx.captured.actionEvent.thread' is possibly 'null'.
+src/modals.test.ts(188,15): error TS2353: Object literal may only specify known properties, and 'type' does not exist in type 'SelectOptionElement'.
+src/modals.test.ts(189,15): error TS2353: Object literal may only specify known properties, and 'type' does not exist in type 'SelectOptionElement'.
+src/modals.test.ts(216,15): error TS2353: Object literal may only specify known properties, and 'type' does not exist in type 'SelectOptionElement'.
+src/modals.test.ts(217,15): error TS2353: Object literal may only specify known properties, and 'type' does not exist in type 'SelectOptionElement'.
+exit 2

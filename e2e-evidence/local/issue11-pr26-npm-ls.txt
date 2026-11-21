@@ -1,0 +1,9 @@
+$ npm ls chat --all   # consumer: chat@4.20.0 + adapter from PR #26
+consumer-pr26@1.0.0 ./consumer-pr26
++-- @bitbasti/chat-adapter-webex@0.1.0
+| `-- chat@4.20.0 deduped
+`-- chat@4.20.0
+
+
+$ find node_modules -path '*/chat/package.json'
+node_modules/chat/package.json -> 4.20.0

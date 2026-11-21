@@ -1,0 +1,20 @@
+{
+  "setup": [
+    {
+      "postA": 200,
+      "postB": 200,
+      "putB": 200
+    }
+  ],
+  "deliveries": [
+    {
+      "at": "2026-11-21T00:28:40.992Z",
+      "messageId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvNzU5ZjFjNDAtZTU0Mi0xMWYxLTk4ZTAtMGI5Njg2MDhjOWIy",
+      "inputs": {
+        "which": "A"
+      }
+    }
+  ],
+  "messageA": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvNzU5ZjFjNDAtZTU0Mi0xMWYxLTk4ZTAtMGI5Njg2MDhjOWIy",
+  "messageB": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvNzVkMTlkZjAtZTU0Mi0xMWYxLWExYmMtNjVkNjliNTEyNTUw"
+}

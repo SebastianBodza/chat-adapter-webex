@@ -1,0 +1,479 @@
+{
+  "label": "pr23",
+  "mode": "api",
+  "worktree": "i8",
+  "results": [
+    {
+      "step": "#8 editMessage(text)",
+      "ok": true,
+      "value": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTEwODhiNTAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0"
+    },
+    {
+      "step": "#8 message after edit (GET)",
+      "ok": true,
+      "value": {
+        "text": "[pr23] #8: EDITED text ✅",
+        "markdown": "[pr23] #8: EDITED text ✅",
+        "hasCard": false,
+        "updated": "2026-11-21T00:29:36.191Z"
+      }
+    },
+    {
+      "step": "#9 editMessage(card)",
+      "ok": true,
+      "value": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTFjMDFiODAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0"
+    },
+    {
+      "step": "#9 message after card edit (GET)",
+      "ok": true,
+      "value": {
+        "text": "[pr23] #9 edited into a card If you see this card, the edit worked.",
+        "markdown": "**[pr23] #9 edited into a card**\n\nIf you see this card, the edit worked.",
+        "hasCard": true,
+        "updated": "2026-11-21T00:29:37.239Z"
+      }
+    },
+    {
+      "step": "#9 control: raw PUT with roomId + attachments",
+      "ok": true,
+      "value": {
+        "status": 200,
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTI2NTBlMTAtZTU0Mi0xMWYxLWExYmMtNjVkNjliNTEyNTUw",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "control card",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "Control: Webex accepted adding this card via PUT",
+                    "weight": "Bolder"
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "control card",
+          "html": "<p>control card</p>",
+          "created": "2026-11-21T00:29:38.033Z",
+          "updated": "2026-11-21T00:29:38.560Z"
+        }
+      }
+    },
+    {
+      "step": "#9 editMessage(text) on a card message",
+      "ok": true,
+      "value": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTMxNmFhZDAtZTU0Mi0xMWYxLTkyNjItMmQ0MzM5OGQ0N2Nk"
+    }
+  ],
+  "exchanges": [
+    {
+      "at": "2026-11-21T00:29:35.032Z",
+      "request": {
+        "method": "GET",
+        "path": "/people/me"
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_986da820-7d3c-4341-9bf3-e9ed988581e0",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "emails": [
+            "chatadapterwebexe2e@webex.bot"
+          ],
+          "phoneNumbers": [],
+          "displayName": "chat-adapter-webex E2E",
+          "nickName": "chat-adapter-webex",
+          "userName": "chatadapterwebexe2e",
+          "avatar": "https://avatar-prod-us-east-2.webexcontent.com/Avtr~V1~71b6b34c-abff-4407-ac50-5e62323aed80/V1~b90b9ae64a0f2abf95f9c58f32ee047c0ca6cb75c2c5e4a5df9e9f5a20b6e160~6398e4b1e2f34d518dffa9bb98b08f70~80",
+          "orgId": "Y2lzY29zcGFyazovL3VzL09SR0FOSVpBVElPTi83MWI2YjM0Yy1hYmZmLTQ0MDctYWM1MC01ZTYyMzIzYWVkODA",
+          "created": "2026-11-21T00:14:53.991Z",
+          "status": "unknown",
+          "type": "bot"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:29:35.343Z",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "markdown": "**[pr23]** E2E run 2026-11-21T00:29:35.034Z: edit scenarios for #8 / #9",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_0325db41-28b5-42f9-b114-d8ed0cf140b8",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTBiODZmODAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "[pr23] E2E run 2026-11-21T00:29:35.034Z: edit scenarios for #8 / #9",
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "**[pr23]** E2E run 2026-11-21T00:29:35.034Z: edit scenarios for #8 / #9",
+          "html": "<p><strong>[pr23]</strong> E2E run 2026-11-21T00:29:35.034Z: edit scenarios for #8 / #9</p>",
+          "created": "2026-11-21T00:29:35.224Z"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:29:35.844Z",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "markdown": "[pr23] #8: original text",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "parentId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTBiODZmODAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_e74ec3ec-bd03-4a76-9ebf-b725edc80a37",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTEwODhiNTAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "[pr23] #8: original text",
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "[pr23] #8: original text",
+          "html": "<p>[pr23] #8: original text</p>",
+          "created": "2026-11-21T00:29:35.749Z",
+          "parentId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTBiODZmODAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:29:36.357Z",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTEwODhiNTAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0",
+        "body": {
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "markdown": "[pr23] #8: EDITED text ✅"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_ff5aac5b-68f3-4430-aec1-75bc561bd4c7",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTEwODhiNTAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "[pr23] #8: EDITED text ✅",
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "[pr23] #8: EDITED text ✅",
+          "html": "<p>[pr23] #8: EDITED text ✅</p>",
+          "created": "2026-11-21T00:29:35.749Z",
+          "updated": "2026-11-21T00:29:36.191Z"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:29:37.042Z",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "markdown": "[pr23] #9: text that should become a card",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "parentId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTBiODZmODAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_c88d7384-f9c2-4b2b-bee6-b299857e3db8",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTFjMDFiODAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "[pr23] #9: text that should become a card",
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "[pr23] #9: text that should become a card",
+          "html": "<p>[pr23] #9: text that should become a card</p>",
+          "created": "2026-11-21T00:29:36.952Z",
+          "parentId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTBiODZmODAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:29:37.425Z",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTFjMDFiODAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0",
+        "body": {
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "markdown": "**[pr23] #9 edited into a card**\n\nIf you see this card, the edit worked.",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[pr23] #9 edited into a card",
+                    "weight": "Bolder",
+                    "size": "Medium",
+                    "wrap": true
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "If you see this card, the edit worked.",
+                    "wrap": true
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_2b9334f8-d4b0-45e0-aec4-896fd99495ff",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTFjMDFiODAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "[pr23] #9 edited into a card If you see this card, the edit worked.",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[pr23] #9 edited into a card",
+                    "weight": "Bolder",
+                    "size": "Medium",
+                    "wrap": true
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "If you see this card, the edit worked.",
+                    "wrap": true
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "**[pr23] #9 edited into a card**\n\nIf you see this card, the edit worked.",
+          "html": "<p><strong>[pr23] #9 edited into a card</strong></p><p>If you see this card, the edit worked.</p>",
+          "created": "2026-11-21T00:29:36.952Z",
+          "updated": "2026-11-21T00:29:37.239Z"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:29:38.124Z",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "markdown": "[pr23] control: raw PUT with roomId + card (bypasses the adapter)",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "parentId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTBiODZmODAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_78f7c767-b0b4-4424-a669-01b901bbb097",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTI2NTBlMTAtZTU0Mi0xMWYxLWExYmMtNjVkNjliNTEyNTUw",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "[pr23] control: raw PUT with roomId + card (bypasses the adapter)",
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "[pr23] control: raw PUT with roomId + card (bypasses the adapter)",
+          "html": "<p>[pr23] control: raw PUT with roomId + card (bypasses the adapter)</p>",
+          "created": "2026-11-21T00:29:38.033Z",
+          "parentId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTBiODZmODAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:29:38.746Z",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTI2NTBlMTAtZTU0Mi0xMWYxLWExYmMtNjVkNjliNTEyNTUw",
+        "body": {
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "markdown": "control card",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "Control: Webex accepted adding this card via PUT",
+                    "weight": "Bolder"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_682f7366-dd2f-4bc7-8c98-ade308322ecb",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTI2NTBlMTAtZTU0Mi0xMWYxLWExYmMtNjVkNjliNTEyNTUw",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "control card",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "Control: Webex accepted adding this card via PUT",
+                    "weight": "Bolder"
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "control card",
+          "html": "<p>control card</p>",
+          "created": "2026-11-21T00:29:38.033Z",
+          "updated": "2026-11-21T00:29:38.560Z"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:29:39.366Z",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "markdown": "**[pr23] #9: card message**\n\noriginal card",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "parentId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTBiODZmODAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[pr23] #9: card message",
+                    "weight": "Bolder",
+                    "size": "Medium",
+                    "wrap": true
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "original card",
+                    "wrap": true
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_93190c17-be69-46bc-9a78-934331e58b57",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTMxNmFhZDAtZTU0Mi0xMWYxLTkyNjItMmQ0MzM5OGQ0N2Nk",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "[pr23] #9: card message original card",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[pr23] #9: card message",
+                    "weight": "Bolder",
+                    "size": "Medium",
+                    "wrap": true
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "original card",
+                    "wrap": true
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "**[pr23] #9: card message**\n\noriginal card",
+          "html": "<p><strong>[pr23] #9: card message</strong></p><p>original card</p>",
+          "created": "2026-11-21T00:29:39.197Z",
+          "parentId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTBiODZmODAtZTU0Mi0xMWYxLWE3YjctMDkwNWYyMTQ4YTc0"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T00:29:39.809Z",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTMxNmFhZDAtZTU0Mi0xMWYxLTkyNjItMmQ0MzM5OGQ0N2Nk",
+        "body": {
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "markdown": "[pr23] card replaced by text"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_2e476ecb-3b57-4c4a-a910-2f36bd853378",
+        "body": {
+          "id": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvYTMxNmFhZDAtZTU0Mi0xMWYxLTkyNjItMmQ0MzM5OGQ0N2Nk",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+          "roomType": "group",
+          "text": "[pr23] card replaced by text",
+          "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8xMjU4MTM0Ni1kYWNkLTQwNTItOWVkOC1kMjExMDI3MWUyMGI",
+          "personEmail": "chatadapterwebexe2e@webex.bot",
+          "markdown": "[pr23] card replaced by text",
+          "html": "<p>[pr23] card replaced by text</p>",
+          "created": "2026-11-21T00:29:39.197Z",
+          "updated": "2026-11-21T00:29:39.710Z"
+        }
+      }
+    }
+  ]
+}

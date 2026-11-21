@@ -1,0 +1,221 @@
+[
+  {
+    "label": "POST message with a file",
+    "request": {
+      "method": "POST",
+      "path": "/messages",
+      "body": "<multipart: markdown + files=e2e-file.txt>"
+    },
+    "response": {
+      "status": 200,
+      "trackingId": "ROUTERGW_54d78d30-e523-4253-9aaf-7dc8f6e44f8a"
+    }
+  },
+  {
+    "label": "PUT text edit of the file message (with roomId)",
+    "request": {
+      "method": "PUT",
+      "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvMGJiYTYzMTAtZTU0My0xMWYxLTljNjUtNTM5NjY0YWVkNTg4",
+      "body": {
+        "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+        "markdown": "[raw] edited file message"
+      }
+    },
+    "response": {
+      "status": 400,
+      "trackingId": "ROUTERGW_e833cb73-9cfd-44f7-bef7-e96f189173e1",
+      "message": "Unable to post message to room: Unable to modify this type of message.",
+      "errors": [
+        {
+          "description": "Unable to post message to room: Unable to modify this type of message."
+        }
+      ]
+    }
+  },
+  {
+    "label": "POST text message",
+    "request": {
+      "method": "POST",
+      "path": "/messages",
+      "body": {
+        "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+        "markdown": "[raw] edit limit: v0"
+      }
+    },
+    "response": {
+      "status": 200,
+      "trackingId": "ROUTERGW_5b7e40a9-1bb3-4e3c-b63f-6a97ed784bff"
+    }
+  },
+  {
+    "label": "PUT edit #1",
+    "request": {
+      "method": "PUT",
+      "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvMGMxMTM1YTAtZTU0My0xMWYxLTk4ZTAtMGI5Njg2MDhjOWIy",
+      "body": {
+        "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+        "markdown": "[raw] edit limit: v1"
+      }
+    },
+    "response": {
+      "status": 200,
+      "trackingId": "ROUTERGW_03f8c95d-19e9-400b-a8d2-f7fecb62d1a8"
+    }
+  },
+  {
+    "label": "PUT edit #2",
+    "request": {
+      "method": "PUT",
+      "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvMGMxMTM1YTAtZTU0My0xMWYxLTk4ZTAtMGI5Njg2MDhjOWIy",
+      "body": {
+        "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+        "markdown": "[raw] edit limit: v2"
+      }
+    },
+    "response": {
+      "status": 200,
+      "trackingId": "ROUTERGW_263dbc9d-6c68-4063-af15-f8eaa2b26f86"
+    }
+  },
+  {
+    "label": "PUT edit #3",
+    "request": {
+      "method": "PUT",
+      "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvMGMxMTM1YTAtZTU0My0xMWYxLTk4ZTAtMGI5Njg2MDhjOWIy",
+      "body": {
+        "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+        "markdown": "[raw] edit limit: v3"
+      }
+    },
+    "response": {
+      "status": 200,
+      "trackingId": "ROUTERGW_e17a9b73-d591-4096-9950-ed958ca01f95"
+    }
+  },
+  {
+    "label": "PUT edit #4",
+    "request": {
+      "method": "PUT",
+      "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvMGMxMTM1YTAtZTU0My0xMWYxLTk4ZTAtMGI5Njg2MDhjOWIy",
+      "body": {
+        "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+        "markdown": "[raw] edit limit: v4"
+      }
+    },
+    "response": {
+      "status": 200,
+      "trackingId": "ROUTERGW_30493cc8-63e6-4680-8724-51ed751973f9"
+    }
+  },
+  {
+    "label": "PUT edit #5",
+    "request": {
+      "method": "PUT",
+      "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvMGMxMTM1YTAtZTU0My0xMWYxLTk4ZTAtMGI5Njg2MDhjOWIy",
+      "body": {
+        "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+        "markdown": "[raw] edit limit: v5"
+      }
+    },
+    "response": {
+      "status": 200,
+      "trackingId": "ROUTERGW_4b84c86d-f0f6-4ff3-a148-5c8c333a814a"
+    }
+  },
+  {
+    "label": "PUT edit #6",
+    "request": {
+      "method": "PUT",
+      "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvMGMxMTM1YTAtZTU0My0xMWYxLTk4ZTAtMGI5Njg2MDhjOWIy",
+      "body": {
+        "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+        "markdown": "[raw] edit limit: v6"
+      }
+    },
+    "response": {
+      "status": 200,
+      "trackingId": "ROUTERGW_c8cc145e-6cfe-4d7a-a100-2ab3b6e5689c"
+    }
+  },
+  {
+    "label": "PUT edit #7",
+    "request": {
+      "method": "PUT",
+      "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvMGMxMTM1YTAtZTU0My0xMWYxLTk4ZTAtMGI5Njg2MDhjOWIy",
+      "body": {
+        "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+        "markdown": "[raw] edit limit: v7"
+      }
+    },
+    "response": {
+      "status": 200,
+      "trackingId": "ROUTERGW_ca79b063-7c5d-4b4c-98e4-bb0a6f5ed09f"
+    }
+  },
+  {
+    "label": "PUT edit #8",
+    "request": {
+      "method": "PUT",
+      "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvMGMxMTM1YTAtZTU0My0xMWYxLTk4ZTAtMGI5Njg2MDhjOWIy",
+      "body": {
+        "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+        "markdown": "[raw] edit limit: v8"
+      }
+    },
+    "response": {
+      "status": 200,
+      "trackingId": "ROUTERGW_696dd3b5-c99e-4059-8b56-8b966395f130"
+    }
+  },
+  {
+    "label": "PUT edit #9",
+    "request": {
+      "method": "PUT",
+      "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvMGMxMTM1YTAtZTU0My0xMWYxLTk4ZTAtMGI5Njg2MDhjOWIy",
+      "body": {
+        "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+        "markdown": "[raw] edit limit: v9"
+      }
+    },
+    "response": {
+      "status": 200,
+      "trackingId": "ROUTERGW_22956ac2-bf09-4241-8021-48b74fd19dd3"
+    }
+  },
+  {
+    "label": "PUT edit #10",
+    "request": {
+      "method": "PUT",
+      "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvMGMxMTM1YTAtZTU0My0xMWYxLTk4ZTAtMGI5Njg2MDhjOWIy",
+      "body": {
+        "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+        "markdown": "[raw] edit limit: v10"
+      }
+    },
+    "response": {
+      "status": 200,
+      "trackingId": "ROUTERGW_feeca566-6ef9-4a5f-a85f-cc93a061df7c"
+    }
+  },
+  {
+    "label": "PUT edit #11",
+    "request": {
+      "method": "PUT",
+      "path": "/messages/Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL01FU1NBR0UvMGMxMTM1YTAtZTU0My0xMWYxLTk4ZTAtMGI5Njg2MDhjOWIy",
+      "body": {
+        "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDU1ODA4NjAtZTU0MC0xMWYxLWI5MjAtOWRiODc1ZGExNzAy",
+        "markdown": "[raw] edit limit: v11"
+      }
+    },
+    "response": {
+      "status": 400,
+      "trackingId": "ROUTERGW_b13946b3-db83-4c84-81d4-472be7bb054c",
+      "message": "Unable to post message to room: \"Max allowed number of edits per activity reached\"",
+      "errors": [
+        {
+          "description": "Unable to post message to room: \"Max allowed number of edits per activity reached\""
+        }
+      ]
+    }
+  }
+]
