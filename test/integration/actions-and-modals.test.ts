@@ -1,4 +1,3 @@
-import { ValidationError } from "@chat-adapter/shared";
 import {
   Actions,
   Button,
@@ -229,39 +228,46 @@ describe("card actions and modals", () => {
       expect(h.api.messages.has(modalMessage.id)).toBe(false);
     });
 
-    // Only checks the request shape for #8. Real Webex clients don't send submits
-    // from an edited card, so an in-place update leaves a dead form (#9).
-    it("sends roomId when it updates the form card for an update response", async () => {
+    // Webex clients send no submits from an edited card (fixtures/webex/edited-card-submit.json),
+    // so an update posts a fresh form card and then deletes the old one.
+    it("replaces the form card for an update response, posting the new card first", async () => {
       respond = () => ({ action: "update", modal: feedbackModal("Step 2: confirm") });
       const modalMessage = await openModalCard();
-      const messagesBefore = h.api.botMessages().length;
 
       const { response } = await click(modalMessage, "File it", ALICE.id, { summary: "x", severity: "low" });
 
       expect(response.status).toBe(200);
-      const [put] = h.api.requestsTo("PUT", `/messages/${modalMessage.id}`);
-      expect(put?.body).toMatchObject({ roomId: ROOM, markdown: expect.stringContaining("Step 2: confirm") });
-      const updated = h.api.messages.get(modalMessage.id) as StoredMessage;
-      expect(updated.markdown).toContain("Step 2: confirm");
-      expect(h.api.botMessages()).toHaveLength(messagesBefore);
+      expect(h.api.requestsTo("PUT", /^\/messages\//)).toHaveLength(0);
+      const replacement = h.api.botMessages().at(-1) as StoredMessage;
+      expect(replacement.id).not.toBe(modalMessage.id);
+      expect(replacement).toMatchObject({ roomId: ROOM, parentId: root.id });
+      expect(replacement.markdown).toContain("Step 2: confirm");
+      expect(h.api.messages.has(modalMessage.id)).toBe(false);
+      const post = h.api.requests.findIndex(
+        (request) => request.method === "POST" && request.path === "/messages" && JSON.stringify(request.body).includes("Step 2")
+      );
+      const del = h.api.requests.findIndex((request) => request.method === "DELETE" && request.path === `/messages/${modalMessage.id}`);
+      expect(post).toBeGreaterThan(-1);
+      expect(del).toBeGreaterThan(post);
       expect(h.logger.entries.filter((entry) => entry.level === "error")).toHaveLength(0);
+
+      // The replacement is a live form for the same view.
+      respond = () => undefined;
+      await click(replacement, "File it", ALICE.id, { summary: "y", severity: "high" });
+      expect(submits.map((event) => event.viewId)).toEqual([openedViews[0]?.viewId, openedViews[0]?.viewId]);
+      expect(submits[1]?.values).toEqual({ summary: "y", severity: "high" });
+      expect(h.api.messages.has(replacement.id)).toBe(false);
     });
 
-    it("reports a rejected form card update as a ValidationError with Webex's reason", async () => {
+    it("keeps the old form card when posting its replacement fails", async () => {
       respond = () => ({ action: "update", modal: feedbackModal("Step 2: confirm") });
       const modalMessage = await openModalCard();
-      const stored = h.api.messages.get(modalMessage.id) as StoredMessage;
-      stored.editCount = 10;
+      h.api.failNext({ method: "POST", path: "/messages" }, 500, { body: { message: "boom" } });
 
-      const { response } = await click(modalMessage, "File it", ALICE.id, { summary: "x", severity: "low" });
+      await click(modalMessage, "File it", ALICE.id, { summary: "x", severity: "low" });
 
-      expect(response.status).toBe(200);
-      const errors = h.logger.entries.filter((entry) => entry.level === "error");
-      expect(errors).toHaveLength(1);
-      const error = (errors[0]?.meta as { error?: unknown } | undefined)?.error;
-      expect(error).toBeInstanceOf(ValidationError);
-      expect((error as Error).message).toContain("Max allowed number of edits per activity reached");
-      expect((error as Error).message).toContain("Webex allows at most 10 edits per message.");
+      expect(h.api.messages.has(modalMessage.id)).toBe(true);
+      expect(h.api.requestsTo("DELETE", `/messages/${modalMessage.id}`)).toHaveLength(0);
     });
 
     it("pushes a new form card for a push response", async () => {
