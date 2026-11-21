@@ -1,6 +1,7 @@
 import { ValidationError } from "@chat-adapter/shared";
 import { Actions, Button, Card, CardText, type Message, paragraph, root, strong, text, type Thread } from "chat";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { StoredMessage } from "./fake-webex-api";
 import { adaptiveCardOf, ALICE, BOB, BOT, BOT_TOKEN, createHarness, type Harness } from "./harness";
 
 const ROOM = "room-engineering";
@@ -360,22 +361,39 @@ describe("conversations end to end", () => {
       expect(h.api.messages.get(sent.id)?.markdown).toBe("Step 10");
     });
 
-    // Known bug: https://github.com/SebastianBodza/chat-adapter-webex/issues/9
-    // Webex can't edit messages with attachments, yet the adapter PUTs a card.
-    // When #9 is fixed this test fails: assert the chosen behaviour instead.
-    it("[bug #9] editing into a card sends an attachment edit Webex rejects", async () => {
+    // Webex's docs say messages with attachments can't be edited, but the real
+    // API edits Adaptive Cards fine once roomId is sent (verified in #9).
+    it("edits a text message into a card and back to text", async () => {
       const sent = await postWorkingMessage();
 
-      await expect(sent.edit(Card({ title: "Result", children: [CardText("All green")] }))).rejects.toThrow(
-        "Editing messages with files or attachments is not supported"
-      );
+      await sent.edit(Card({ title: "Result", children: [CardText("All green")] }));
 
       const [put] = h.api.requestsTo("PUT", `/messages/${sent.id}`);
       expect(put?.body).toMatchObject({
         roomId: ROOM,
         attachments: [expect.objectContaining({ contentType: "application/vnd.microsoft.card.adaptive" })],
       });
-      expect(h.api.messages.get(sent.id)?.attachments).toBeUndefined();
+      expect(adaptiveCardOf(h.api.messages.get(sent.id) as StoredMessage).body).toEqual(
+        expect.arrayContaining([expect.objectContaining({ text: "Result" })])
+      );
+
+      await sent.edit("Back to plain text");
+
+      expect(h.api.messages.get(sent.id)).toMatchObject({ markdown: "Back to plain text", attachments: undefined });
+    });
+
+    it("reports Webex's refusal to edit a message with a file as a ValidationError", async () => {
+      const threadId = h.adapter.encodeThreadId({ roomId: ROOM, rootMessageId: "root" });
+      const sent = await h.adapter.postMessage(threadId, {
+        markdown: "report attached",
+        files: [{ filename: "report.txt", data: Buffer.from("x"), mimeType: "text/plain" }],
+      });
+
+      const rejected = h.adapter.editMessage(threadId, sent.id, "new text");
+
+      await expect(rejected).rejects.toBeInstanceOf(ValidationError);
+      await expect(rejected).rejects.toThrow("Unable to modify this type of message");
+      expect(h.api.messages.get(sent.id)?.markdown).toBe("report attached");
     });
 
     it("refuses to edit a message into a file upload", async () => {

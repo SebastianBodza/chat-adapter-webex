@@ -604,11 +604,20 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
       viewId: string;
     }
   ): Promise<WebexMessage> {
+    const roomId = await this.resolveRoomId(this.decodeThreadId(threadId).roomId);
+    if (!roomId) {
+      throw new ValidationError(
+        "webex",
+        "Cannot update this modal: the Webex room ID of the direct message is not known."
+      );
+    }
+
     const raw = await this.webexRequest<WebexMessage>(
       `/messages/${encodeURIComponent(messageId)}`,
       {
         method: "PUT",
         body: {
+          roomId,
           markdown: modalToFallbackText(modal),
           attachments: [
             {
@@ -812,7 +821,7 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
       if (error instanceof WebexBadRequestError) {
         throw new ValidationError(
           "webex",
-          `Webex rejected editing message ${messageId} (${error.message.replace(/\.$/, "")}). Webex allows at most 10 edits per message and can't edit messages that have files or cards.`
+          `Webex rejected editing message ${messageId} (${error.message.replace(/\.$/, "")}). Webex allows at most 10 edits per message and can't edit messages that have files.`
         );
       }
       throw error;

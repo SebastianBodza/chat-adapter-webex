@@ -84,6 +84,7 @@ bot.onNewMention(async (thread, message) => {
 - Typing indicators are not available in the Webex Messaging API
 - Only one file upload per message is supported
 - Cards and file uploads cannot be combined in the same message
+- Messages with files can't be edited, and Webex allows at most 10 edits per message; `editMessage` throws `ValidationError` in both cases. Text and card messages can be edited (including text ⇄ card), but Webex clients don't send button or form submits from a card that was edited (see #9)
 
 ## Development
 

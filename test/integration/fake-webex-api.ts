@@ -9,9 +9,12 @@
  * - Bots listing a group space without `mentionedPeople=me` get a 403.
  * - `POST /messages` with `toPersonId` creates (or reuses) a direct room.
  * - Messages accept either JSON or multipart (`files`) bodies.
- * - Edits follow the documented rules: `roomId` + `text`/`markdown` are
- *   required, messages with files or attachments can't be edited, only the
- *   author can edit, and a message can be edited at most 10 times.
+ * - Edits follow what the real API does (verified against webexapis.com in
+ *   November 2026, see issues #8 and #9): `roomId` + `text`/`markdown` are
+ *   required ("Invalid roomId" otherwise), only the author can edit, a message
+ *   can be edited at most 10 times, and messages with *files* can't be edited.
+ *   Contrary to the docs, Adaptive Card attachments *can* be edited: the PUT
+ *   body's `attachments` replace the message's (omitting them removes the card).
  *   https://developer.webex.com/messaging/docs/api/v1/messages/edit-a-message
  */
 import type {
@@ -397,8 +400,11 @@ export class FakeWebexApi {
     const markdown = typeof fields.markdown === "string" ? fields.markdown : undefined;
     const text = typeof fields.text === "string" ? fields.text : undefined;
 
-    if (typeof fields.roomId !== "string" || (markdown === undefined && text === undefined)) {
-      return webexError(400, "roomId and text or markdown are required.");
+    if (typeof fields.roomId !== "string") {
+      return webexError(400, "Invalid roomId");
+    }
+    if (markdown === undefined && text === undefined) {
+      return webexError(400, "text or markdown is required.");
     }
     if (fields.roomId !== message.roomId) {
       return webexError(400, "roomId does not match the message.");
@@ -406,9 +412,8 @@ export class FakeWebexApi {
     if (message.personId !== this.bot.id) {
       return webexError(403, "You can only edit your own messages.");
     }
-    const hasAttachments = (message.attachments?.length ?? 0) > 0 || (message.files?.length ?? 0) > 0;
-    if (hasAttachments || (Array.isArray(fields.attachments) && fields.attachments.length > 0)) {
-      return webexError(400, "Editing messages with files or attachments is not supported.");
+    if ((message.files?.length ?? 0) > 0) {
+      return webexError(400, "Unable to post message to room: Unable to modify this type of message.");
     }
     if ((message.editCount ?? 0) >= MAX_EDITS_PER_MESSAGE) {
       return webexError(400, "The maximum number of edits for this message has been reached.");
@@ -416,6 +421,10 @@ export class FakeWebexApi {
 
     message.markdown = markdown;
     message.text = text ?? markdown;
+    message.attachments =
+      Array.isArray(fields.attachments) && fields.attachments.length > 0
+        ? (fields.attachments as WebexMessage["attachments"])
+        : undefined;
     message.editCount = (message.editCount ?? 0) + 1;
     message.updated = this.tick();
     return json(this.publicMessage(message));
