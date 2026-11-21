@@ -4,8 +4,8 @@
 #
 #   npm install @bitbasti/chat-adapter-webex chat@<version>
 #
-# npm resolves every other dependency (e.g. @chat-adapter/shared) on its own,
-# with peer-dependency checks enabled. The tests import the built `dist/`
+# npm resolves every other dependency on its own, with peer-dependency checks
+# enabled. The tests import the built `dist/`
 # through tiny shims instead of `src/`.
 #
 # Usage: scripts/consumer-compat.sh <minimum|latest|x.y.z> [work-dir]
@@ -67,6 +67,15 @@ echo 'export type * from "@bitbasti/chat-adapter-webex";' > "$APP/src/types.ts"
 
 echo "▶ resolved versions"
 # Fails on an invalid tree (missing/invalid peers), which users would hit too.
-npm ls chat @chat-adapter/shared @chat-adapter/state-memory --all
+npm ls chat @chat-adapter/state-memory --all
+
+# Exactly one copy of chat: the consumer's. A nested second copy (e.g. pulled in
+# by a dependency pinning another chat version) breaks instanceof checks.
+CHAT_COPIES="$(npm ls chat --all --parseable | sort -u | wc -l | tr -d ' ')"
+if [ "$CHAT_COPIES" != "1" ]; then
+  echo "::error::Expected one copy of chat in the consumer tree, found $CHAT_COPIES:" >&2
+  npm ls chat --all --parseable >&2
+  exit 1
+fi
 
 npx vitest run test/integration

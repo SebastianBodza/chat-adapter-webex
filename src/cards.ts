@@ -1,7 +1,3 @@
-import {
-  createEmojiConverter,
-  cardToFallbackText as sharedCardToFallbackText,
-} from "@chat-adapter/shared";
 import type {
   ActionsElement,
   ButtonElement,
@@ -15,8 +11,8 @@ import type {
   SectionElement,
   TextElement,
 } from "chat";
+import { cardToFallbackMarkdown, convertEmoji } from "./shared";
 
-const convertEmoji = createEmojiConverter("gchat");
 
 /** Webex Adaptive Card structure sent as a message attachment. */
 export interface WebexAdaptiveCard {
@@ -321,9 +317,5 @@ function mapWebexButtonStyle(
  * that cannot render Adaptive Cards.
  */
 export function cardToFallbackText(card: CardElement): string {
-  return sharedCardToFallbackText(card, {
-    boldFormat: "**",
-    lineBreak: "\n\n",
-    platform: "gchat",
-  });
+  return cardToFallbackMarkdown(card);
 }

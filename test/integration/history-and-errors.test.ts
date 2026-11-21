@@ -3,7 +3,7 @@ import {
   AuthenticationError,
   NetworkError,
   PermissionError,
-} from "@chat-adapter/shared";
+} from "../../src/index";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ALICE, BOB, BOT, createHarness, type Harness } from "./harness";
 

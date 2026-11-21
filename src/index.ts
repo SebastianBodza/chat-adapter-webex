@@ -9,7 +9,7 @@ import {
   ResourceNotFoundError,
   toBuffer,
   ValidationError,
-} from "@chat-adapter/shared";
+} from "./shared";
 import type {
   ActionEvent,
   Adapter,
@@ -1578,10 +1578,7 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
       form.set("markdown", markdown);
 
       for (const file of files) {
-        const buffer = await toBuffer(file.data, {
-          platform: "teams",
-          throwOnUnsupported: false,
-        });
+        const buffer = await toBuffer(file.data);
         if (!buffer) {
           throw new ValidationError("webex", "Unsupported file data type");
         }
@@ -1930,6 +1927,15 @@ export function createWebexAdapter(
 }
 
 export { cardToFallbackText, cardToWebexAdaptiveCard } from "./cards";
+export {
+  AdapterError,
+  AdapterRateLimitError,
+  AuthenticationError,
+  NetworkError,
+  PermissionError,
+  ResourceNotFoundError,
+  ValidationError,
+} from "./shared";
 export { WebexFormatConverter } from "./markdown";
 export type {
   WebexAttachmentAction,
