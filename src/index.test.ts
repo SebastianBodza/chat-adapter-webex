@@ -33,6 +33,19 @@ function createMockState(): StateAdapter & { cache: Map<string, unknown> } {
       .fn()
       .mockResolvedValue({ threadId: "", token: "", expiresAt: 0 } as Lock),
     releaseLock: vi.fn().mockResolvedValue(undefined),
+    forceReleaseLock: vi.fn().mockResolvedValue(undefined),
+    appendToList: vi.fn().mockResolvedValue(undefined),
+    getList: vi.fn().mockResolvedValue([]),
+    enqueue: vi.fn().mockResolvedValue(1),
+    dequeue: vi.fn().mockResolvedValue(null),
+    queueDepth: vi.fn().mockResolvedValue(0),
+    setIfNotExists: vi.fn().mockImplementation((key: string, value: unknown) => {
+      if (cache.has(key)) {
+        return Promise.resolve(false);
+      }
+      cache.set(key, value);
+      return Promise.resolve(true);
+    }),
     extendLock: vi.fn().mockResolvedValue(true),
     get: vi.fn().mockImplementation((key: string) => {
       return Promise.resolve(cache.get(key) ?? null);

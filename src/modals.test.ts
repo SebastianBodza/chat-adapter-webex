@@ -185,8 +185,8 @@ describe("modalToWebexAdaptiveCard", () => {
           label: "Color",
           placeholder: "Pick one",
           options: [
-            { type: "option", label: "Red", value: "red" },
-            { type: "option", label: "Blue", value: "blue" },
+            { label: "Red", value: "red" },
+            { label: "Blue", value: "blue" },
           ],
         },
       ],
@@ -213,8 +213,8 @@ describe("modalToWebexAdaptiveCard", () => {
           id: "plan",
           label: "Plan",
           options: [
-            { type: "option", label: "Free", value: "free" },
-            { type: "option", label: "Pro", value: "pro" },
+            { label: "Free", value: "free" },
+            { label: "Pro", value: "pro" },
           ],
         },
       ],

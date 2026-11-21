@@ -313,7 +313,7 @@ describe("Webex adapter integration", () => {
     expect(ctx.captured.actionEvent?.actionId).toBe("approve");
     expect(ctx.captured.actionEvent?.value).toBe("yes");
     expect(ctx.captured.actionEvent?.messageId).toBe("msg-card-1");
-    expect(ctx.captured.actionEvent?.thread.id).toBe(
+    expect(ctx.captured.actionEvent?.thread?.id).toBe(
       ctx.captured.actionEvent?.threadId
     );
     expect(ctx.captured.actionEvent?.user).toMatchObject({
