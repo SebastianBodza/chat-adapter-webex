@@ -315,46 +315,67 @@ describe("conversations end to end", () => {
       expect(h.api.requestsTo("DELETE", `/messages/${sent.id}`)).toHaveLength(1);
     });
 
-    // Known bug: https://github.com/SebastianBodza/chat-adapter-webex/issues/8
-    // Pins today's behaviour. When #8 is fixed this test fails: replace it with
-    // one asserting the edit succeeds and the PUT body contains roomId.
-    it("[bug #8] text edits are rejected because roomId is not sent", async () => {
+    it("edits a sent message in place and sends the roomId Webex requires", async () => {
       const sent = await postWorkingMessage();
 
-      await expect(sent.edit("Done **✓**")).rejects.toThrow("roomId and text or markdown are required.");
+      const edited = await sent.edit("Done **✓**");
 
+      expect(edited.id).toBe(sent.id);
       const [put] = h.api.requestsTo("PUT", `/messages/${sent.id}`);
-      expect(put?.body).toEqual({ markdown: "Done **✓**" });
-      expect(h.api.messages.get(sent.id)?.markdown).toBe("Working… ⏳");
+      expect(put?.body).toEqual({ roomId: ROOM, markdown: "Done **✓**" });
+      expect(h.api.messages.get(sent.id)?.markdown).toBe("Done **✓**");
+    });
+
+    it("edits a direct message using the DM room learned when posting", async () => {
+      await h.init();
+      const threadId = await h.adapter.openDM(ALICE.id);
+      const sent = await h.adapter.postMessage(threadId, "Ping");
+      const roomId = h.api.messages.get(sent.id)?.roomId;
+
+      await h.adapter.editMessage(threadId, sent.id, "Pong");
+
+      expect(h.api.requestsTo("PUT", `/messages/${sent.id}`)[0]?.body).toMatchObject({ roomId, markdown: "Pong" });
+    });
+
+    it("refuses to edit a direct message whose room is not known yet", async () => {
+      await h.init();
+      const threadId = await h.adapter.openDM(BOB.id);
+
+      await expect(h.adapter.editMessage(threadId, "msg-unknown", "x")).rejects.toThrow(
+        "its Webex room ID is not known yet"
+      );
+      expect(h.api.requests.filter((request) => request.method === "PUT")).toHaveLength(0);
+    });
+
+    it("reports the Webex 10-edit limit as a ValidationError", async () => {
+      const sent = await postWorkingMessage();
+      for (let edit = 1; edit <= 10; edit++) {
+        await sent.edit(`Step ${edit}`);
+      }
+
+      const rejected = sent.edit("Step 11");
+
+      await expect(rejected).rejects.toBeInstanceOf(ValidationError);
+      await expect(rejected).rejects.toThrow("at most 10 edits per message");
+      expect(h.api.messages.get(sent.id)?.markdown).toBe("Step 10");
     });
 
     // Known bug: https://github.com/SebastianBodza/chat-adapter-webex/issues/9
     // Webex can't edit messages with attachments, yet the adapter PUTs a card.
-    // When #9 is fixed this test fails: assert the chosen behaviour instead
-    // (repost the card, or a ValidationError before any request is sent).
+    // When #9 is fixed this test fails: assert the chosen behaviour instead.
     it("[bug #9] editing into a card sends an attachment edit Webex rejects", async () => {
       const sent = await postWorkingMessage();
 
       await expect(sent.edit(Card({ title: "Result", children: [CardText("All green")] }))).rejects.toThrow(
-        "roomId and text or markdown are required."
+        "Editing messages with files or attachments is not supported"
       );
 
       const [put] = h.api.requestsTo("PUT", `/messages/${sent.id}`);
       expect(put?.body).toMatchObject({
+        roomId: ROOM,
         attachments: [expect.objectContaining({ contentType: "application/vnd.microsoft.card.adaptive" })],
       });
       expect(h.api.messages.get(sent.id)?.attachments).toBeUndefined();
-
-      // Independent of #8: even with roomId, Webex rejects this body for its attachments.
-      const replay = await fetch(put?.url ?? "", {
-        method: "PUT",
-        headers: { authorization: `Bearer ${BOT_TOKEN}`, "content-type": "application/json" },
-        body: JSON.stringify({ ...(put?.body as object), roomId: ROOM }),
-      });
-      expect(replay.status).toBe(400);
-      expect(await replay.json()).toMatchObject({
-        message: "Editing messages with files or attachments is not supported.",
-      });
     });
 
     it("refuses to edit a message into a file upload", async () => {

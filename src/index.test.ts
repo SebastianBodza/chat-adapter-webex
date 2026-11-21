@@ -1464,6 +1464,32 @@ describe("editMessage", () => {
     expect(String(fetchMock.mock.calls[0][0])).toContain("/messages/msg-1");
     const body = JSON.parse(requestInit.body as string) as Record<string, unknown>;
     expect(body.markdown).toContain("Updated text");
+    expect(body.roomId).toBe("room-1");
+  });
+
+  it("edits a channel-level message using the room from the channel ID", async () => {
+    const fetchMock = vi.mocked(fetch);
+    fetchMock.mockResolvedValueOnce(jsonResponse({ id: "msg-1", roomId: "room-1" }));
+    const adapter = createWebexAdapter({ botToken: "token", botUserId: "bot", logger: mockLogger });
+    const channelId = adapter.channelIdFromThreadId(
+      adapter.encodeThreadId({ roomId: "room-1", rootMessageId: "root-1" })
+    );
+
+    await adapter.editMessage(channelId, "msg-1", "Updated");
+
+    const body = JSON.parse((fetchMock.mock.calls[0][1] as RequestInit).body as string) as Record<string, unknown>;
+    expect(body.roomId).toBe("room-1");
+  });
+
+  it("passes non-400 edit failures through unchanged", async () => {
+    const fetchMock = vi.mocked(fetch);
+    fetchMock.mockResolvedValueOnce(jsonResponse({ message: "nope" }, 403));
+    const adapter = createWebexAdapter({ botToken: "token", botUserId: "bot", logger: mockLogger });
+    const threadId = adapter.encodeThreadId({ roomId: "room-1", rootMessageId: "root-1" });
+
+    await expect(adapter.editMessage(threadId, "msg-1", "Updated")).rejects.toMatchObject({
+      name: "PermissionError",
+    });
   });
 
   it("rejects editing messages with file uploads", async () => {

@@ -786,22 +786,50 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
       attachments = undefined;
     }
 
-    const raw = await this.webexRequest<WebexMessage>(
-      `/messages/${encodeURIComponent(messageId)}`,
-      {
-        method: "PUT",
-        body: {
-          markdown,
-          attachments,
-        },
+    // Webex requires roomId on edits; DM thread IDs only carry the person ID.
+    const roomId = await this.resolveRoomId(this.roomIdFromThreadOrChannelId(threadId));
+    if (!roomId) {
+      throw new ValidationError(
+        "webex",
+        "Cannot edit this direct message: its Webex room ID is not known yet. Post or receive a message in the DM first."
+      );
+    }
+
+    let raw: WebexMessage;
+    try {
+      raw = await this.webexRequest<WebexMessage>(
+        `/messages/${encodeURIComponent(messageId)}`,
+        {
+          method: "PUT",
+          body: {
+            roomId,
+            markdown,
+            attachments,
+          },
+        }
+      );
+    } catch (error) {
+      if (error instanceof WebexBadRequestError) {
+        throw new ValidationError(
+          "webex",
+          `Webex rejected editing message ${messageId} (${error.message.replace(/\.$/, "")}). Webex allows at most 10 edits per message and can't edit messages that have files or cards.`
+        );
       }
-    );
+      throw error;
+    }
 
     return {
       id: raw.id,
       threadId,
       raw,
     };
+  }
+
+  /** Room ID from a thread ID or, for channel-level posts, a channel ID. */
+  private roomIdFromThreadOrChannelId(id: string): string {
+    return id.split(":").length === 2
+      ? this.decodeChannelId(id)
+      : this.decodeThreadId(id).roomId;
   }
 
   async deleteMessage(_threadId: string, messageId: string): Promise<void> {
@@ -1870,7 +1898,18 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
       );
     }
 
+    if (response.status === 400) {
+      return new WebexBadRequestError(message);
+    }
+
     return new NetworkError("webex", message);
+  }
+}
+
+/** A Webex `400 Bad Request`; callers may turn it into a `ValidationError`. */
+class WebexBadRequestError extends NetworkError {
+  constructor(message: string) {
+    super("webex", message);
   }
 }
 
