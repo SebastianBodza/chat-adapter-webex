@@ -37,7 +37,7 @@ describe("cardToWebexAdaptiveCard", () => {
           ],
         },
       ],
-    } as const;
+    } satisfies CardElement;
 
     const converted = cardToWebexAdaptiveCard(card);
     expect(converted.type).toBe("AdaptiveCard");
@@ -70,7 +70,7 @@ describe("cardToWebexAdaptiveCard", () => {
           ],
         },
       ],
-    } as const;
+    } satisfies CardElement;
 
     const converted = cardToWebexAdaptiveCard(card);
     const action = converted.actions?.[0] as Record<string, unknown>;
@@ -214,8 +214,8 @@ describe("cardToWebexAdaptiveCard", () => {
               label: "Color",
               placeholder: "Pick one",
               options: [
-                { type: "option", label: "Red", value: "red" },
-                { type: "option", label: "Blue", value: "blue" },
+                { label: "Red", value: "red" },
+                { label: "Blue", value: "blue" },
               ],
             },
           ],
@@ -254,8 +254,8 @@ describe("cardToWebexAdaptiveCard", () => {
               id: "plan",
               label: "Plan",
               options: [
-                { type: "option", label: "Free", value: "free" },
-                { type: "option", label: "Pro", value: "pro" },
+                { label: "Free", value: "free" },
+                { label: "Pro", value: "pro" },
               ],
             },
           ],
@@ -286,8 +286,8 @@ describe("cardToWebexAdaptiveCard", () => {
               label: "Language",
               initialOption: "ts",
               options: [
-                { type: "option", label: "TypeScript", value: "ts" },
-                { type: "option", label: "JavaScript", value: "js" },
+                { label: "TypeScript", value: "ts" },
+                { label: "JavaScript", value: "js" },
               ],
             },
           ],
@@ -315,7 +315,7 @@ describe("cardToWebexAdaptiveCard", () => {
               label: "Required",
               optional: false,
               options: [
-                { type: "option", label: "A", value: "a" },
+                { label: "A", value: "a" },
               ],
             },
           ],
@@ -437,7 +437,7 @@ describe("cardToFallbackText", () => {
       type: "card",
       title: "Alert",
       children: [{ type: "text", content: "Something happened." }],
-    } as const;
+    } satisfies CardElement;
 
     const fallback = cardToFallbackText(card);
     expect(fallback).toContain("Alert");
