@@ -1,0 +1,57 @@
+{
+  "scenario": "edit-missing-markdown",
+  "description": "An edit without text or markdown is rejected.",
+  "recordedAt": "2026-11-21T10:06:07.226Z",
+  "source": "Real Webex (webexapis.com), recorded by scripts/record-webex-fixtures.mjs",
+  "steps": [
+    {
+      "type": "http",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edit without text"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_99a829bb-5813-49d8-91e6-814560265f5d",
+        "body": {
+          "id": "rec-message-3",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] edit without text",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] edit without text",
+          "html": "<p>[fixtures 2026-11-21T10:06] edit without text</p>",
+          "created": "2026-11-21T10:06:06.835Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-3",
+        "body": {
+          "roomId": "rec-room-space"
+        }
+      },
+      "response": {
+        "status": 400,
+        "trackingId": "ROUTERGW_e25eccc6-8ea2-4724-88fc-de0bef0049fd",
+        "body": {
+          "message": "One of the following must be non-empty: text, file, or meetingId",
+          "errors": [
+            {
+              "description": "One of the following must be non-empty: text, file, or meetingId"
+            }
+          ],
+          "trackingId": "ROUTERGW_e25eccc6-8ea2-4724-88fc-de0bef0049fd"
+        }
+      }
+    }
+  ]
+}

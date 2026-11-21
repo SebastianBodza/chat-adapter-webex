@@ -1,0 +1,107 @@
+{
+  "scenario": "edit-without-room-id",
+  "description": "PUT /messages/{id} needs roomId: without it Webex answers 400 Invalid roomId (#8).",
+  "recordedAt": "2026-11-21T10:06:04.448Z",
+  "source": "Real Webex (webexapis.com), recorded by scripts/record-webex-fixtures.mjs",
+  "steps": [
+    {
+      "type": "http",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edit without roomId"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_8c32fa88-53c6-4e23-a6bb-5da1d2d4e92b",
+        "body": {
+          "id": "rec-message-1",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] edit without roomId",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] edit without roomId",
+          "html": "<p>[fixtures 2026-11-21T10:06] edit without roomId</p>",
+          "created": "2026-11-21T10:06:03.311Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-1",
+        "body": {
+          "markdown": "[fixtures 2026-11-21T10:06] edited without roomId"
+        }
+      },
+      "response": {
+        "status": 400,
+        "trackingId": "ROUTERGW_fcca8031-c4b1-45e8-b932-25cfdfd94f67",
+        "body": {
+          "message": "Invalid roomId",
+          "errors": [
+            {
+              "description": "Invalid roomId"
+            }
+          ],
+          "trackingId": "ROUTERGW_fcca8031-c4b1-45e8-b932-25cfdfd94f67"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-1",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edited with roomId"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_7492778e-8cdf-4a36-8304-804a4b84f3a1",
+        "body": {
+          "id": "rec-message-1",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] edited with roomId",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] edited with roomId",
+          "html": "<p>[fixtures 2026-11-21T10:06] edited with roomId</p>",
+          "created": "2026-11-21T10:06:03.311Z",
+          "updated": "2026-11-21T10:06:04.052Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "GET",
+        "path": "/messages/rec-message-1"
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_f042c2f4-6c32-4504-9ccc-bdc3482a28d4",
+        "body": {
+          "id": "rec-message-1",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] edited with roomId",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] edited with roomId",
+          "html": "<p>[fixtures 2026-11-21T10:06] edited with roomId</p>",
+          "created": "2026-11-21T10:06:03.311Z",
+          "updated": "2026-11-21T10:06:04.052Z"
+        }
+      }
+    }
+  ]
+}

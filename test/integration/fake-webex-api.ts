@@ -9,10 +9,19 @@
  * - Bots listing a group space without `mentionedPeople=me` get a 403.
  * - `POST /messages` with `toPersonId` creates (or reuses) a direct room.
  * - Messages accept either JSON or multipart (`files`) bodies.
- * - Edits follow the documented rules: `roomId` + `text`/`markdown` are
- *   required, messages with files or attachments can't be edited, only the
- *   author can edit, and a message can be edited at most 10 times.
+ * - Edits follow what the real API does (verified against webexapis.com in
+ *   November 2026, see issues #8 and #9): `roomId` + `text`/`markdown` are
+ *   required ("Invalid roomId" otherwise), only the author can edit, a message
+ *   can be edited at most 10 times, and messages with *files* can't be edited.
+ *   Contrary to the docs, Adaptive Card attachments *can* be edited: the PUT
+ *   body's `attachments` replace the message's (omitting them removes the card).
  *   https://developer.webex.com/messaging/docs/api/v1/messages/edit-a-message
+ * - Errors with a recording in `fixtures/webex/` use the status and message
+ *   real Webex returns, checked by `webex-recorded.test.ts`: edits (no roomId,
+ *   unknown room, no text, not the author, files, edit limit), replies to an
+ *   unknown parent, and reading a deleted message. Other errors (e.g. "Room
+ *   not found", "roomId does not match the message.", "Replies to replies are
+ *   not supported.") are not recorded and only approximate Webex.
  */
 import type {
   WebexAttachmentAction,
@@ -44,6 +53,10 @@ export interface StoredMessage extends WebexMessage {
   updated?: string;
   uploadedFiles?: UploadedFile[];
 }
+
+/** What Webex says when `parentId` isn't a message it knows. */
+const PARENT_NOT_FOUND =
+  'Unable to post message to room: "\\"id\\" is missing from \\"parent\\" object, or its value is not a timeuuid"';
 
 /** Webex rejects the 11th edit of a message. */
 export const MAX_EDITS_PER_MESSAGE = 10;
@@ -265,7 +278,7 @@ export class FakeWebexApi {
       if (segments.length === 2) {
         const message = this.messages.get(segments[1]);
         if (!message) {
-          return webexError(404, "Message not found");
+          return webexError(404, "Unable to get message.");
         }
         if (method === "GET") {
           return json(this.publicMessage(message));
@@ -356,7 +369,7 @@ export class FakeWebexApi {
     if (parentId) {
       const parent = this.messages.get(parentId);
       if (!parent || parent.roomId !== room?.id) {
-        return webexError(400, "Parent message not found in this room.");
+        return webexError(400, PARENT_NOT_FOUND);
       }
       if (parent.parentId) {
         return webexError(400, "Replies to replies are not supported.");
@@ -397,25 +410,34 @@ export class FakeWebexApi {
     const markdown = typeof fields.markdown === "string" ? fields.markdown : undefined;
     const text = typeof fields.text === "string" ? fields.text : undefined;
 
-    if (typeof fields.roomId !== "string" || (markdown === undefined && text === undefined)) {
-      return webexError(400, "roomId and text or markdown are required.");
+    if (typeof fields.roomId !== "string") {
+      return webexError(400, "Invalid roomId");
+    }
+    if (!this.rooms.has(fields.roomId)) {
+      return webexError(404, "Could not find a room with provided ID.");
+    }
+    if (markdown === undefined && text === undefined) {
+      return webexError(400, "One of the following must be non-empty: text, file, or meetingId");
     }
     if (fields.roomId !== message.roomId) {
       return webexError(400, "roomId does not match the message.");
     }
     if (message.personId !== this.bot.id) {
-      return webexError(403, "You can only edit your own messages.");
+      return webexError(400, 'Unable to post message to room: "User does not have permission to edit this activity"');
     }
-    const hasAttachments = (message.attachments?.length ?? 0) > 0 || (message.files?.length ?? 0) > 0;
-    if (hasAttachments || (Array.isArray(fields.attachments) && fields.attachments.length > 0)) {
-      return webexError(400, "Editing messages with files or attachments is not supported.");
+    if ((message.files?.length ?? 0) > 0) {
+      return webexError(400, "Unable to post message to room: Unable to modify this type of message.");
     }
     if ((message.editCount ?? 0) >= MAX_EDITS_PER_MESSAGE) {
-      return webexError(400, "The maximum number of edits for this message has been reached.");
+      return webexError(400, 'Unable to post message to room: "Max allowed number of edits per activity reached"');
     }
 
     message.markdown = markdown;
     message.text = text ?? markdown;
+    message.attachments =
+      Array.isArray(fields.attachments) && fields.attachments.length > 0
+        ? (fields.attachments as WebexMessage["attachments"])
+        : undefined;
     message.editCount = (message.editCount ?? 0) + 1;
     message.updated = this.tick();
     return json(this.publicMessage(message));

@@ -84,6 +84,7 @@ bot.onNewMention(async (thread, message) => {
 - Typing indicators are not available in the Webex Messaging API
 - Only one file upload per message is supported
 - Cards and file uploads cannot be combined in the same message
+- Messages with files can't be edited, and Webex allows at most 10 edits per message; `editMessage` throws `ValidationError` in both cases. Text and card messages can be edited (including text ⇄ card), but Webex clients don't send button or form submits from a card that was edited (see #9)
 
 ## Development
 
@@ -101,6 +102,23 @@ against a stateful in-memory fake of the Webex REST API (`fake-webex-api.ts`),
 installed as the global `fetch`. Webhooks are signed exactly like Webex signs
 them, so the tests cover signature checks, message hydration, threading, DMs,
 cards, modals, file uploads, pagination and error mapping without network access.
+
+The fake is kept honest by recordings of the real Webex API in
+`test/integration/fixtures/webex/`: `webex-recorded.test.ts` replays every
+recorded request against the fake (same status and error message as real Webex)
+and feeds the recorded webhooks through the adapter. The recordings hold no
+tokens or signatures, and IDs and emails are replaced by placeholders. To
+record them again with a test bot and a test space:
+
+```bash
+WEBEX_BOT_TOKEN=… WEBEX_ROOM_ID=… node scripts/record-webex-fixtures.mjs
+```
+
+Add `--webhooks <public URL>` (for example an ngrok tunnel to `--port`, default
+8787) to also record the interactive scenarios, which ask a person in the space
+to act in a Webex client: mention the bot (`webhook-mention`), submit a card
+(`webhook-card-submit`), then press Send on the edited card and on its
+replacement (`edited-card-submit`).
 
 `consumer-compat.sh` installs the packed tarball into an empty project like a
 user would and runs the same integration suite against the built package. The

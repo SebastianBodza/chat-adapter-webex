@@ -225,7 +225,7 @@ describe("Webex API error mapping", () => {
       .postMessage(h.adapter.encodeThreadId({ roomId: GROUP, rootMessageId: "missing-parent" }), "hi")
       .catch((caught: unknown) => caught);
     expect(error).toBeInstanceOf(NetworkError);
-    expect((error as Error).message).toContain("Parent message not found");
+    expect((error as Error).message).toContain("is missing from");
   });
 
   it("does not let a failing handler reply break webhook acknowledgement", async () => {

@@ -1,0 +1,90 @@
+{
+  "scenario": "webhook-mention",
+  "description": "A person mentions the bot: messages/created webhook, the message, and the bot trying to edit it.",
+  "recordedAt": "2026-11-21T10:07:03.739Z",
+  "source": "Real Webex (webexapis.com), recorded by scripts/record-webex-fixtures.mjs",
+  "steps": [
+    {
+      "type": "webhook",
+      "signed": true,
+      "signatureValid": true,
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "id": "rec-webhook-1",
+        "name": "fixtures-messages",
+        "targetUrl": "https://bot.example.com/api/webhooks/webex",
+        "resource": "messages",
+        "event": "created",
+        "filter": "roomId=rec-room-space",
+        "orgId": "rec-organization-1",
+        "createdBy": "rec-people-bot",
+        "appId": "rec-application-1",
+        "ownedBy": "creator",
+        "status": "active",
+        "created": "2026-11-21T10:06:15.541Z",
+        "actorId": "rec-people-2",
+        "data": {
+          "id": "rec-message-9",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "personId": "rec-people-2",
+          "personEmail": "person-1@example.com",
+          "mentionedPeople": [
+            "rec-people-bot"
+          ],
+          "created": "2026-11-21T10:07:02.948Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "GET",
+        "path": "/messages/rec-message-9"
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_e6bb51d1-19fd-43d8-8577-cce9b4a57c12",
+        "body": {
+          "id": "rec-message-9",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "chat-adapter-webex hello from the fixture recorder",
+          "personId": "rec-people-2",
+          "personEmail": "person-1@example.com",
+          "html": "<p><spark-mention data-object-type=\"person\" data-object-id=\"rec-people-bot\">chat-adapter-webex</spark-mention> hello from the fixture recorder</p>",
+          "mentionedPeople": [
+            "rec-people-bot"
+          ],
+          "created": "2026-11-21T10:07:02.948Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-9",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "edited by the bot"
+        }
+      },
+      "response": {
+        "status": 400,
+        "trackingId": "ROUTERGW_1707fcdb-2daf-4ed0-abd8-cd38b962b6f6",
+        "body": {
+          "message": "Unable to post message to room: \"User does not have permission to edit this activity\"",
+          "errors": [
+            {
+              "description": "Unable to post message to room: \"User does not have permission to edit this activity\""
+            }
+          ],
+          "trackingId": "ROUTERGW_1707fcdb-2daf-4ed0-abd8-cd38b962b6f6"
+        }
+      }
+    }
+  ]
+}

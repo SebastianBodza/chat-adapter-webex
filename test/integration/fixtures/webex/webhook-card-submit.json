@@ -1,0 +1,150 @@
+{
+  "scenario": "webhook-card-submit",
+  "description": "A person submits an Adaptive Card: attachmentActions/created webhook and the action.",
+  "recordedAt": "2026-11-21T10:07:16.392Z",
+  "source": "Real Webex (webexapis.com), recorded by scripts/record-webex-fixtures.mjs",
+  "steps": [
+    {
+      "type": "http",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "fixture card",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[fixtures 2026-11-21T10:06] type a note and press Send",
+                    "weight": "Bolder",
+                    "wrap": true
+                  },
+                  {
+                    "type": "Input.Text",
+                    "id": "note",
+                    "label": "Note"
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Send",
+                    "data": {
+                      "actionId": "submit-note"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_573993b7-5513-4926-a04d-45eb13556d17",
+        "body": {
+          "id": "rec-message-10",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "fixture card",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[fixtures 2026-11-21T10:06] type a note and press Send",
+                    "weight": "Bolder",
+                    "wrap": true
+                  },
+                  {
+                    "type": "Input.Text",
+                    "id": "note",
+                    "label": "Note"
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Send",
+                    "data": {
+                      "actionId": "submit-note"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "fixture card",
+          "html": "<p>fixture card</p>",
+          "created": "2026-11-21T10:07:04.236Z"
+        }
+      }
+    },
+    {
+      "type": "webhook",
+      "signed": true,
+      "signatureValid": true,
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "id": "rec-webhook-2",
+        "name": "fixtures-attachmentActions",
+        "targetUrl": "https://bot.example.com/api/webhooks/webex",
+        "resource": "attachmentActions",
+        "event": "created",
+        "filter": "roomId=rec-room-space",
+        "orgId": "rec-organization-1",
+        "createdBy": "rec-people-bot",
+        "appId": "rec-application-1",
+        "ownedBy": "creator",
+        "status": "active",
+        "created": "2026-11-21T10:06:15.774Z",
+        "actorId": "rec-people-2",
+        "data": {
+          "id": "rec-attachment-action-1",
+          "type": "submit",
+          "messageId": "rec-message-10",
+          "personId": "rec-people-2",
+          "roomId": "rec-room-space",
+          "created": "2026-11-21T10:07:15.712Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "GET",
+        "path": "/attachment/actions/rec-attachment-action-1"
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_cc2407ee-f411-499a-a4d7-3e4d660883c4",
+        "body": {
+          "id": "rec-attachment-action-1",
+          "type": "submit",
+          "messageId": "rec-message-10",
+          "inputs": {
+            "actionId": "submit-note",
+            "note": "fixture note"
+          },
+          "personId": "rec-people-2",
+          "roomId": "rec-room-space",
+          "created": "2026-11-21T10:07:15.712Z"
+        }
+      }
+    }
+  ]
+}
