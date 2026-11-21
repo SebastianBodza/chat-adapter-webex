@@ -103,6 +103,21 @@ installed as the global `fetch`. Webhooks are signed exactly like Webex signs
 them, so the tests cover signature checks, message hydration, threading, DMs,
 cards, modals, file uploads, pagination and error mapping without network access.
 
+The fake is kept honest by recordings of the real Webex API in
+`test/integration/fixtures/webex/`: `webex-recorded.test.ts` replays every
+recorded request against the fake (same status and error message as real Webex)
+and feeds the recorded webhooks through the adapter. The recordings hold no
+tokens or signatures, and IDs and emails are replaced by placeholders. To
+record them again with a test bot and a test space:
+
+```bash
+WEBEX_BOT_TOKEN=… WEBEX_ROOM_ID=… node scripts/record-webex-fixtures.mjs
+```
+
+Add `--webhooks <public URL>` (for example an ngrok tunnel to `--port`, default
+8787) to also record the mention and card-submit scenarios, which ask you to act
+in a Webex client.
+
 `consumer-compat.sh` installs the packed tarball into an empty project like a
 user would and runs the same integration suite against the built package. The
 `Compat` workflow runs it weekly, on dependency changes and on demand, and opens

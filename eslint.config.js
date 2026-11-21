@@ -18,6 +18,22 @@ export default tseslint.config(
     },
   },
   {
+    // Node CLI scripts (e.g. the Webex fixture recorder) print progress.
+    files: ["scripts/**/*.mjs"],
+    languageOptions: {
+      globals: {
+        Blob: "readonly",
+        Buffer: "readonly",
+        FormData: "readonly",
+        console: "readonly",
+        fetch: "readonly",
+        process: "readonly",
+        setTimeout: "readonly",
+      },
+    },
+    rules: { "no-console": "off" },
+  },
+  {
     files: ["**/*.test.ts", "test/**/*.ts"],
     rules: {
       "@typescript-eslint/no-non-null-assertion": "off",

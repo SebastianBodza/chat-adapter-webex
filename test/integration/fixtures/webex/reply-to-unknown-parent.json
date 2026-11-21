@@ -1,0 +1,33 @@
+{
+  "scenario": "reply-to-unknown-parent",
+  "description": "Replying to a message that does not exist is rejected.",
+  "recordedAt": "2026-11-21T10:06:14.634Z",
+  "source": "Real Webex (webexapis.com), recorded by scripts/record-webex-fixtures.mjs",
+  "steps": [
+    {
+      "type": "http",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "roomId": "rec-room-space",
+          "parentId": "rec-message-7",
+          "markdown": "[fixtures 2026-11-21T10:06] reply"
+        }
+      },
+      "response": {
+        "status": 400,
+        "trackingId": "ROUTERGW_57730d02-6518-4387-a29e-1ad3781c51c9",
+        "body": {
+          "message": "Unable to post message to room: \"\\\"id\\\" is missing from \\\"parent\\\" object, or its value is not a timeuuid\"",
+          "errors": [
+            {
+              "description": "Unable to post message to room: \"\\\"id\\\" is missing from \\\"parent\\\" object, or its value is not a timeuuid\""
+            }
+          ],
+          "trackingId": "ROUTERGW_57730d02-6518-4387-a29e-1ad3781c51c9"
+        }
+      }
+    }
+  ]
+}

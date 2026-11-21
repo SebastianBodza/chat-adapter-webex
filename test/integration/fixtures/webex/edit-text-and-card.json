@@ -1,0 +1,212 @@
+{
+  "scenario": "edit-text-and-card",
+  "description": "Adaptive Card edits work once roomId is sent: text → card → text. Omitting attachments removes the card (#9).",
+  "recordedAt": "2026-11-21T10:06:06.628Z",
+  "source": "Real Webex (webexapis.com), recorded by scripts/record-webex-fixtures.mjs",
+  "steps": [
+    {
+      "type": "http",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] text that becomes a card"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_53a69de0-44df-4f88-9850-84a359428acc",
+        "body": {
+          "id": "rec-message-2",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] text that becomes a card",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] text that becomes a card",
+          "html": "<p>[fixtures 2026-11-21T10:06] text that becomes a card</p>",
+          "created": "2026-11-21T10:06:04.866Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-2",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] now a card",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[fixtures 2026-11-21T10:06] edited into a card",
+                    "weight": "Bolder",
+                    "wrap": true
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Send",
+                    "data": {
+                      "actionId": "noop"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_7ac7695e-6942-4ec5-8ee0-4c27d35683bb",
+        "body": {
+          "id": "rec-message-2",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] now a card",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[fixtures 2026-11-21T10:06] edited into a card",
+                    "weight": "Bolder",
+                    "wrap": true
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Send",
+                    "data": {
+                      "actionId": "noop"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] now a card",
+          "html": "<p>[fixtures 2026-11-21T10:06] now a card</p>",
+          "created": "2026-11-21T10:06:04.866Z",
+          "updated": "2026-11-21T10:06:05.410Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "GET",
+        "path": "/messages/rec-message-2"
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_4a3db198-0829-47d0-9738-6bbd8eb91db2",
+        "body": {
+          "id": "rec-message-2",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] now a card",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[fixtures 2026-11-21T10:06] edited into a card",
+                    "weight": "Bolder",
+                    "wrap": true
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Send",
+                    "data": {
+                      "actionId": "noop"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] now a card",
+          "html": "<p>[fixtures 2026-11-21T10:06] now a card</p>",
+          "created": "2026-11-21T10:06:04.866Z",
+          "updated": "2026-11-21T10:06:05.410Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-2",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] back to text"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_d869813c-2005-4478-84c2-a252f03e846f",
+        "body": {
+          "id": "rec-message-2",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] back to text",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] back to text",
+          "html": "<p>[fixtures 2026-11-21T10:06] back to text</p>",
+          "created": "2026-11-21T10:06:04.866Z",
+          "updated": "2026-11-21T10:06:06.248Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "GET",
+        "path": "/messages/rec-message-2"
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_db846426-c3d8-49ae-957d-f0cf633cb584",
+        "body": {
+          "id": "rec-message-2",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] back to text",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] back to text",
+          "html": "<p>[fixtures 2026-11-21T10:06] back to text</p>",
+          "created": "2026-11-21T10:06:04.866Z",
+          "updated": "2026-11-21T10:06:06.248Z"
+        }
+      }
+    }
+  ]
+}

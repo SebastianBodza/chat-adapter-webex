@@ -1,0 +1,254 @@
+{
+  "scenario": "edited-card-submit",
+  "description": "Webex Web sends no submit from a card edited via PUT; a replacement card (post new, delete old) works (#9).",
+  "recordedAt": "2026-11-21T10:08:30.411Z",
+  "source": "Real Webex (webexapis.com), recorded by scripts/record-webex-fixtures.mjs",
+  "steps": [
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-10",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "fixture card (edited)",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[fixtures 2026-11-21T10:06] EDITED card: press Send",
+                    "weight": "Bolder",
+                    "wrap": true
+                  },
+                  {
+                    "type": "Input.Text",
+                    "id": "note",
+                    "label": "Note"
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Send",
+                    "data": {
+                      "actionId": "submit-edited"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_72b0724a-6343-47bb-85fe-27accd09550e",
+        "body": {
+          "id": "rec-message-10",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "fixture card (edited)",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[fixtures 2026-11-21T10:06] EDITED card: press Send",
+                    "weight": "Bolder",
+                    "wrap": true
+                  },
+                  {
+                    "type": "Input.Text",
+                    "id": "note",
+                    "label": "Note"
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Send",
+                    "data": {
+                      "actionId": "submit-edited"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "fixture card (edited)",
+          "html": "<p>fixture card (edited)</p>",
+          "created": "2026-11-21T10:07:04.236Z",
+          "updated": "2026-11-21T10:07:16.872Z"
+        }
+      }
+    },
+    {
+      "type": "observation",
+      "description": "Send was pressed on the edited card in Webex Web.",
+      "attachmentActionsWebhooks": 0
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "fixture card (replacement)",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[fixtures 2026-11-21T10:06] replacement card: press Send",
+                    "weight": "Bolder",
+                    "wrap": true
+                  },
+                  {
+                    "type": "Input.Text",
+                    "id": "note",
+                    "label": "Note"
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Send",
+                    "data": {
+                      "actionId": "submit-replacement"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_24c6c450-eb4c-429b-809e-59e8b10168f0",
+        "body": {
+          "id": "rec-message-11",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "fixture card (replacement)",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "version": "1.3",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "[fixtures 2026-11-21T10:06] replacement card: press Send",
+                    "weight": "Bolder",
+                    "wrap": true
+                  },
+                  {
+                    "type": "Input.Text",
+                    "id": "note",
+                    "label": "Note"
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Send",
+                    "data": {
+                      "actionId": "submit-replacement"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "fixture card (replacement)",
+          "html": "<p>fixture card (replacement)</p>",
+          "created": "2026-11-21T10:08:17.217Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "DELETE",
+        "path": "/messages/rec-message-10"
+      },
+      "response": {
+        "status": 204,
+        "trackingId": "ROUTERGW_0d5b0bf4-721e-4582-aa41-3c298e9e2f18"
+      }
+    },
+    {
+      "type": "webhook",
+      "signed": true,
+      "signatureValid": true,
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "id": "rec-webhook-2",
+        "name": "fixtures-attachmentActions",
+        "targetUrl": "https://bot.example.com/api/webhooks/webex",
+        "resource": "attachmentActions",
+        "event": "created",
+        "filter": "roomId=rec-room-space",
+        "orgId": "rec-organization-1",
+        "createdBy": "rec-people-bot",
+        "appId": "rec-application-1",
+        "ownedBy": "creator",
+        "status": "active",
+        "created": "2026-11-21T10:06:15.774Z",
+        "actorId": "rec-people-2",
+        "data": {
+          "id": "rec-attachment-action-2",
+          "type": "submit",
+          "messageId": "rec-message-11",
+          "personId": "rec-people-2",
+          "roomId": "rec-room-space",
+          "created": "2026-11-21T10:08:29.797Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "GET",
+        "path": "/attachment/actions/rec-attachment-action-2"
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_f3475fda-5354-4cc7-8516-69ad55c07e3c",
+        "body": {
+          "id": "rec-attachment-action-2",
+          "type": "submit",
+          "messageId": "rec-message-11",
+          "inputs": {
+            "actionId": "submit-replacement"
+          },
+          "personId": "rec-people-2",
+          "roomId": "rec-room-space",
+          "created": "2026-11-21T10:08:29.797Z"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,328 @@
+{
+  "scenario": "edit-limit",
+  "description": "Webex allows 10 edits per message; the 11th is rejected (#8).",
+  "recordedAt": "2026-11-21T10:06:14.418Z",
+  "source": "Real Webex (webexapis.com), recorded by scripts/record-webex-fixtures.mjs",
+  "steps": [
+    {
+      "type": "http",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v0"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_747e5fa3-7634-428e-8226-c5aa700a617d",
+        "body": {
+          "id": "rec-message-6",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] edit limit v0",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v0",
+          "html": "<p>[fixtures 2026-11-21T10:06] edit limit v0</p>",
+          "created": "2026-11-21T10:06:10.081Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-6",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v1"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_4d601c78-3f29-4953-96b2-e360a736e623",
+        "body": {
+          "id": "rec-message-6",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] edit limit v1",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v1",
+          "html": "<p>[fixtures 2026-11-21T10:06] edit limit v1</p>",
+          "created": "2026-11-21T10:06:10.081Z",
+          "updated": "2026-11-21T10:06:10.324Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-6",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v2"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_e847d643-5290-4f7f-a458-ff469fa3bc40",
+        "body": {
+          "id": "rec-message-6",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] edit limit v2",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v2",
+          "html": "<p>[fixtures 2026-11-21T10:06] edit limit v2</p>",
+          "created": "2026-11-21T10:06:10.081Z",
+          "updated": "2026-11-21T10:06:10.584Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-6",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v3"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_474b5fd3-f96a-4e21-ae39-23e0bfd3f7eb",
+        "body": {
+          "id": "rec-message-6",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] edit limit v3",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v3",
+          "html": "<p>[fixtures 2026-11-21T10:06] edit limit v3</p>",
+          "created": "2026-11-21T10:06:10.081Z",
+          "updated": "2026-11-21T10:06:11.075Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-6",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v4"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_84e4390a-50c5-4cf4-bff7-cafb7ab635e6",
+        "body": {
+          "id": "rec-message-6",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] edit limit v4",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v4",
+          "html": "<p>[fixtures 2026-11-21T10:06] edit limit v4</p>",
+          "created": "2026-11-21T10:06:10.081Z",
+          "updated": "2026-11-21T10:06:11.572Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-6",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v5"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_c4c41e69-ef9f-44b1-bfc0-6439210a110e",
+        "body": {
+          "id": "rec-message-6",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] edit limit v5",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v5",
+          "html": "<p>[fixtures 2026-11-21T10:06] edit limit v5</p>",
+          "created": "2026-11-21T10:06:10.081Z",
+          "updated": "2026-11-21T10:06:12.052Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-6",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v6"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_8f0845d3-b546-483d-aa50-def367e101df",
+        "body": {
+          "id": "rec-message-6",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] edit limit v6",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v6",
+          "html": "<p>[fixtures 2026-11-21T10:06] edit limit v6</p>",
+          "created": "2026-11-21T10:06:10.081Z",
+          "updated": "2026-11-21T10:06:12.326Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-6",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v7"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_bc865f09-8b4d-4da7-af9e-4d35556e45af",
+        "body": {
+          "id": "rec-message-6",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] edit limit v7",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v7",
+          "html": "<p>[fixtures 2026-11-21T10:06] edit limit v7</p>",
+          "created": "2026-11-21T10:06:10.081Z",
+          "updated": "2026-11-21T10:06:12.595Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-6",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v8"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_5c387c47-ee96-4325-894a-e41c2169d576",
+        "body": {
+          "id": "rec-message-6",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] edit limit v8",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v8",
+          "html": "<p>[fixtures 2026-11-21T10:06] edit limit v8</p>",
+          "created": "2026-11-21T10:06:10.081Z",
+          "updated": "2026-11-21T10:06:12.877Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-6",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v9"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_7cccb8e2-1767-49da-acb3-46d4f8e813cf",
+        "body": {
+          "id": "rec-message-6",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] edit limit v9",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v9",
+          "html": "<p>[fixtures 2026-11-21T10:06] edit limit v9</p>",
+          "created": "2026-11-21T10:06:10.081Z",
+          "updated": "2026-11-21T10:06:13.376Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-6",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v10"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_fedf53d3-1c17-41b3-b505-1c7a70297d63",
+        "body": {
+          "id": "rec-message-6",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] edit limit v10",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v10",
+          "html": "<p>[fixtures 2026-11-21T10:06] edit limit v10</p>",
+          "created": "2026-11-21T10:06:10.081Z",
+          "updated": "2026-11-21T10:06:13.873Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-6",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edit limit v11"
+        }
+      },
+      "response": {
+        "status": 400,
+        "trackingId": "ROUTERGW_08cea82d-a922-4a75-9f1c-6d265561e4fe",
+        "body": {
+          "message": "Unable to post message to room: \"Max allowed number of edits per activity reached\"",
+          "errors": [
+            {
+              "description": "Unable to post message to room: \"Max allowed number of edits per activity reached\""
+            }
+          ],
+          "trackingId": "ROUTERGW_08cea82d-a922-4a75-9f1c-6d265561e4fe"
+        }
+      }
+    }
+  ]
+}

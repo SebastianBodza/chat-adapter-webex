@@ -1,3 +1,4 @@
+import { ValidationError } from "@chat-adapter/shared";
 import {
   Actions,
   Button,
@@ -121,7 +122,8 @@ describe("card actions and modals", () => {
     expect(h.api.requestsTo("GET", `/people/${BOB.id}`)).toHaveLength(1);
   });
 
-  it("falls back to the webhook email when the person lookup fails", async () => {
+  // Real attachmentActions webhooks carry no personEmail (fixtures/webex/webhook-card-submit.json).
+  it("falls back to the person ID when the person lookup fails", async () => {
     const users: ActionEvent["user"][] = [];
     h.chat.onAction(async (event) => {
       users.push(event.user);
@@ -130,7 +132,7 @@ describe("card actions and modals", () => {
 
     await click(cardMessage, "Approve", BOB.id);
 
-    expect(users[0]).toMatchObject({ userId: BOB.id, fullName: "bob@example.com", userName: "bob@example.com" });
+    expect(users[0]).toMatchObject({ userId: BOB.id, fullName: BOB.id, userName: BOB.id });
   });
 
   it("serialises multi-input card submissions as JSON", async () => {
@@ -243,6 +245,23 @@ describe("card actions and modals", () => {
       expect(updated.markdown).toContain("Step 2: confirm");
       expect(h.api.botMessages()).toHaveLength(messagesBefore);
       expect(h.logger.entries.filter((entry) => entry.level === "error")).toHaveLength(0);
+    });
+
+    it("reports a rejected form card update as a ValidationError with Webex's reason", async () => {
+      respond = () => ({ action: "update", modal: feedbackModal("Step 2: confirm") });
+      const modalMessage = await openModalCard();
+      const stored = h.api.messages.get(modalMessage.id) as StoredMessage;
+      stored.editCount = 10;
+
+      const { response } = await click(modalMessage, "File it", ALICE.id, { summary: "x", severity: "low" });
+
+      expect(response.status).toBe(200);
+      const errors = h.logger.entries.filter((entry) => entry.level === "error");
+      expect(errors).toHaveLength(1);
+      const error = (errors[0]?.meta as { error?: unknown } | undefined)?.error;
+      expect(error).toBeInstanceOf(ValidationError);
+      expect((error as Error).message).toContain("Max allowed number of edits per activity reached");
+      expect((error as Error).message).toContain("Webex allows at most 10 edits per message.");
     });
 
     it("pushes a new form card for a push response", async () => {

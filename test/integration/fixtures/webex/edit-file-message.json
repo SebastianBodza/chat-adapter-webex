@@ -1,0 +1,72 @@
+{
+  "scenario": "edit-file-message",
+  "description": "Messages with files can't be edited (#9).",
+  "recordedAt": "2026-11-21T10:06:09.675Z",
+  "source": "Real Webex (webexapis.com), recorded by scripts/record-webex-fixtures.mjs",
+  "steps": [
+    {
+      "type": "http",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "multipart": true,
+          "fields": {
+            "roomId": "rec-room-space",
+            "markdown": "[fixtures 2026-11-21T10:06] message with a file"
+          },
+          "files": [
+            {
+              "field": "files",
+              "name": "fixture.txt",
+              "type": "text/plain",
+              "size": 12
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_f69f6313-318a-4918-982c-415778cf800f",
+        "body": {
+          "id": "rec-message-5",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] message with a file",
+          "files": [
+            "https://webexapis.com/v1/contents/rec-content-1"
+          ],
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] message with a file",
+          "html": "<p>[fixtures 2026-11-21T10:06] message with a file</p>",
+          "created": "2026-11-21T10:06:09.061Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-5",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edited file message"
+        }
+      },
+      "response": {
+        "status": 400,
+        "trackingId": "ROUTERGW_3dbebf7b-c402-4746-9610-6123790d9add",
+        "body": {
+          "message": "Unable to post message to room: Unable to modify this type of message.",
+          "errors": [
+            {
+              "description": "Unable to post message to room: Unable to modify this type of message."
+            }
+          ],
+          "trackingId": "ROUTERGW_3dbebf7b-c402-4746-9610-6123790d9add"
+        }
+      }
+    }
+  ]
+}

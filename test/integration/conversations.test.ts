@@ -361,6 +361,28 @@ describe("conversations end to end", () => {
       expect(h.api.messages.get(sent.id)?.markdown).toBe("Step 10");
     });
 
+    it("keeps Webex's reason when it rejects an edit of a message with files", async () => {
+      const sent = await postWorkingMessage();
+      h.api.messages.get(sent.id)?.files?.push("https://files.webexapis.test/contents/report.txt");
+
+      const rejected = sent.edit("New text");
+
+      await expect(rejected).rejects.toBeInstanceOf(ValidationError);
+      await expect(rejected).rejects.toThrow(
+        "Unable to post message to room: Unable to modify this type of message. Webex can't edit messages that have files."
+      );
+    });
+
+    it("adds no hint when Webex rejects an edit for another reason", async () => {
+      const sent = await postWorkingMessage();
+      h.api.failNext({ method: "PUT", path: `/messages/${sent.id}` }, 400, { body: { message: "Something else." } });
+
+      const rejected = sent.edit("New text");
+
+      await expect(rejected).rejects.toBeInstanceOf(ValidationError);
+      await expect(rejected).rejects.toThrow(new RegExp(`^Webex rejected editing message ${sent.id}: Something else\\.$`));
+    });
+
     // Webex's docs say messages with attachments can't be edited, but the real
     // API edits Adaptive Cards fine once roomId is sent (verified in #9).
     it("edits a text message into a card and back to text", async () => {

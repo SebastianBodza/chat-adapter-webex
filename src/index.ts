@@ -612,22 +612,27 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
       );
     }
 
-    const raw = await this.webexRequest<WebexMessage>(
-      `/messages/${encodeURIComponent(messageId)}`,
-      {
-        method: "PUT",
-        body: {
-          roomId,
-          markdown: modalToFallbackText(modal),
-          attachments: [
-            {
-              contentType: "application/vnd.microsoft.card.adaptive",
-              content: modalToWebexAdaptiveCard(modal, metadata),
-            },
-          ],
-        },
-      }
-    );
+    let raw: WebexMessage;
+    try {
+      raw = await this.webexRequest<WebexMessage>(
+        `/messages/${encodeURIComponent(messageId)}`,
+        {
+          method: "PUT",
+          body: {
+            roomId,
+            markdown: modalToFallbackText(modal),
+            attachments: [
+              {
+                contentType: "application/vnd.microsoft.card.adaptive",
+                content: modalToWebexAdaptiveCard(modal, metadata),
+              },
+            ],
+          },
+        }
+      );
+    } catch (error) {
+      throw editRejection(messageId, error);
+    }
 
     await this.storeModalState({
       callbackId: metadata.callbackId,
@@ -818,13 +823,7 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
         }
       );
     } catch (error) {
-      if (error instanceof WebexBadRequestError) {
-        throw new ValidationError(
-          "webex",
-          `Webex rejected editing message ${messageId} (${error.message.replace(/\.$/, "")}). Webex allows at most 10 edits per message and can't edit messages that have files.`
-        );
-      }
-      throw error;
+      throw editRejection(messageId, error);
     }
 
     return {
@@ -1920,6 +1919,29 @@ class WebexBadRequestError extends NetworkError {
   constructor(message: string) {
     super("webex", message);
   }
+}
+
+/** Hints for the edit rejections whose cause Webex reports (see fixtures/webex/). */
+const EDIT_REJECTION_HINTS: Array<[RegExp, string]> = [
+  [/max allowed number of edits/i, "Webex allows at most 10 edits per message."],
+  [/unable to modify this type of message/i, "Webex can't edit messages that have files."],
+];
+
+/**
+ * Turns a `400` from `PUT /messages/{id}` into a `ValidationError` that keeps
+ * Webex's own reason, plus a hint when the reason is a known edit limit.
+ * Other errors are returned unchanged.
+ */
+function editRejection(messageId: string, error: unknown): unknown {
+  if (!(error instanceof WebexBadRequestError)) {
+    return error;
+  }
+  const reason = error.message.replace(/\.$/, "");
+  const hint = EDIT_REJECTION_HINTS.find(([pattern]) => pattern.test(reason))?.[1];
+  return new ValidationError(
+    "webex",
+    `Webex rejected editing message ${messageId}: ${reason}.${hint ? ` ${hint}` : ""}`
+  );
 }
 
 /**

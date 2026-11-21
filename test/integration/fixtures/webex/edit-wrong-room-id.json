@@ -1,0 +1,58 @@
+{
+  "scenario": "edit-wrong-room-id",
+  "description": "An edit whose roomId is not the message's room is rejected.",
+  "recordedAt": "2026-11-21T10:06:07.911Z",
+  "source": "Real Webex (webexapis.com), recorded by scripts/record-webex-fixtures.mjs",
+  "steps": [
+    {
+      "type": "http",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] edit with another roomId"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_a2755fec-ff4c-4a4d-a2ad-3d7ff846a425",
+        "body": {
+          "id": "rec-message-4",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] edit with another roomId",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] edit with another roomId",
+          "html": "<p>[fixtures 2026-11-21T10:06] edit with another roomId</p>",
+          "created": "2026-11-21T10:06:07.617Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "PUT",
+        "path": "/messages/rec-message-4",
+        "body": {
+          "roomId": "rec-room-2",
+          "markdown": "[fixtures 2026-11-21T10:06] edited"
+        }
+      },
+      "response": {
+        "status": 404,
+        "trackingId": "ROUTERGW_031ba78d-f8fa-4e93-a936-82fb58dbd1b4",
+        "body": {
+          "message": "Could not find a room with provided ID.",
+          "errors": [
+            {
+              "description": "Could not find a room with provided ID."
+            }
+          ],
+          "trackingId": "ROUTERGW_031ba78d-f8fa-4e93-a936-82fb58dbd1b4"
+        }
+      }
+    }
+  ]
+}

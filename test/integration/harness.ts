@@ -135,19 +135,17 @@ export function createHarness(options: HarnessOptions = {}) {
     message: Partial<StoredMessage> & { roomId: string }
   ): Promise<{ message: StoredMessage; response: Response }> => {
     const stored = api.addMessage(message);
-    const response = await sendWebhook({
-      id: "webhook-messages",
-      resource: "messages",
-      event: "created",
-      actorId: stored.personId,
-      data: {
+    const response = await sendWebhook(
+      messageWebhookPayload({
         id: stored.id,
         roomId: stored.roomId,
+        roomType: stored.roomType,
         personId: stored.personId,
         personEmail: stored.personEmail,
+        mentionedPeople: stored.mentionedPeople,
         created: stored.created,
-      },
-    });
+      })
+    );
     return { message: stored, response };
   };
 
@@ -156,19 +154,16 @@ export function createHarness(options: HarnessOptions = {}) {
     action: Omit<WebexAttachmentAction, "id"> & { id?: string }
   ): Promise<{ action: WebexAttachmentAction; response: Response }> => {
     const stored = api.addAttachmentAction(action);
-    const person = stored.personId ? api.people.get(stored.personId) : undefined;
-    const response = await sendWebhook({
-      id: "webhook-actions",
-      resource: "attachmentActions",
-      event: "created",
-      actorId: stored.personId,
-      data: {
+    const response = await sendWebhook(
+      actionWebhookPayload({
         id: stored.id,
+        type: stored.type,
         messageId: stored.messageId,
         personId: stored.personId,
-        personEmail: person?.emails?.[0],
-      },
-    });
+        roomId: stored.roomId,
+        created: stored.created,
+      })
+    );
     return { action: stored, response };
   };
 
@@ -185,6 +180,37 @@ export function createHarness(options: HarnessOptions = {}) {
     sendWebhook,
     state,
   };
+}
+
+/**
+ * A `messages:created` webhook body. `data` has the same fields real Webex
+ * sends (see `fixtures/webex/webhook-mention.json`).
+ */
+export function messageWebhookPayload(data: {
+  created?: string;
+  id: string;
+  mentionedPeople?: string[];
+  personEmail?: string;
+  personId?: string;
+  roomId: string;
+  roomType?: string;
+}) {
+  return { id: "webhook-messages", resource: "messages", event: "created", actorId: data.personId, data };
+}
+
+/**
+ * An `attachmentActions:created` webhook body. Like real Webex, `data` has no
+ * `personEmail` (see `fixtures/webex/webhook-card-submit.json`).
+ */
+export function actionWebhookPayload(data: {
+  created?: string;
+  id: string;
+  messageId?: string;
+  personId?: string;
+  roomId?: string;
+  type?: string;
+}) {
+  return { id: "webhook-actions", resource: "attachmentActions", event: "created", actorId: data.personId, data };
 }
 
 /** Thread ID the adapter derives for a group-space message rooted at `rootMessageId`. */

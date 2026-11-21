@@ -1,0 +1,65 @@
+{
+  "scenario": "delete-message",
+  "description": "Deleting a message, then reading it.",
+  "recordedAt": "2026-11-21T10:06:15.321Z",
+  "source": "Real Webex (webexapis.com), recorded by scripts/record-webex-fixtures.mjs",
+  "steps": [
+    {
+      "type": "http",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "roomId": "rec-room-space",
+          "markdown": "[fixtures 2026-11-21T10:06] to be deleted"
+        }
+      },
+      "response": {
+        "status": 200,
+        "trackingId": "ROUTERGW_4fb18baa-c0bb-4f5a-9b74-190f1b7edc6c",
+        "body": {
+          "id": "rec-message-8",
+          "roomId": "rec-room-space",
+          "roomType": "group",
+          "text": "[fixtures 2026-11-21T10:06] to be deleted",
+          "personId": "rec-people-bot",
+          "personEmail": "bot@webex.bot",
+          "markdown": "[fixtures 2026-11-21T10:06] to be deleted",
+          "html": "<p>[fixtures 2026-11-21T10:06] to be deleted</p>",
+          "created": "2026-11-21T10:06:14.825Z"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "DELETE",
+        "path": "/messages/rec-message-8"
+      },
+      "response": {
+        "status": 204,
+        "trackingId": "ROUTERGW_bd53f240-090c-4855-90dc-7fc8130fe0a2"
+      }
+    },
+    {
+      "type": "http",
+      "request": {
+        "method": "GET",
+        "path": "/messages/rec-message-8"
+      },
+      "response": {
+        "status": 404,
+        "trackingId": "ROUTERGW_33d5e790-d126-4b73-8f48-2f2b984e8890",
+        "body": {
+          "message": "Unable to get message.",
+          "errors": [
+            {
+              "description": "Unable to get message."
+            }
+          ],
+          "trackingId": "ROUTERGW_33d5e790-d126-4b73-8f48-2f2b984e8890"
+        }
+      }
+    }
+  ]
+}
