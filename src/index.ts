@@ -496,16 +496,16 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
     }
 
     if (response.action === "update") {
-      const viewId = metadata.viewId || randomUUID();
-      await this.updateModalCardMessage(threadId, messageId, response.modal, {
+      // Webex accepts card edits, but its clients send no submits from an
+      // edited card (fixtures/webex/edited-card-submit.json), so replace the
+      // form card instead. Post first: if that fails, the old form stays.
+      await this.postModalCardMessage(threadId, response.modal, {
         callbackId: response.modal.callbackId,
         contextId: metadata.contextId,
         privateMetadata: response.modal.privateMetadata ?? metadata.privateMetadata,
-        viewId,
+        viewId: metadata.viewId || randomUUID(),
       });
-      if (metadata.viewId && metadata.viewId !== viewId) {
-        await this.deleteModalState(metadata.viewId);
-      }
+      await this.safeDeleteMessage(threadId, messageId);
       return;
     }
 
@@ -580,58 +580,6 @@ export class WebexAdapter implements Adapter<WebexThreadId, WebexMessage> {
 
     if (target.type === "dm" && raw.roomId) {
       await this.setDmRoom(target.personId, raw.roomId);
-    }
-
-    await this.storeModalState({
-      callbackId: metadata.callbackId,
-      contextId: metadata.contextId,
-      privateMetadata: metadata.privateMetadata,
-      threadId,
-      viewId: metadata.viewId,
-    });
-
-    return raw;
-  }
-
-  private async updateModalCardMessage(
-    threadId: string,
-    messageId: string,
-    modal: ModalElement,
-    metadata: {
-      callbackId: string;
-      contextId?: string;
-      privateMetadata?: string;
-      viewId: string;
-    }
-  ): Promise<WebexMessage> {
-    const roomId = await this.resolveRoomId(this.decodeThreadId(threadId).roomId);
-    if (!roomId) {
-      throw new ValidationError(
-        "webex",
-        "Cannot update this modal: the Webex room ID of the direct message is not known."
-      );
-    }
-
-    let raw: WebexMessage;
-    try {
-      raw = await this.webexRequest<WebexMessage>(
-        `/messages/${encodeURIComponent(messageId)}`,
-        {
-          method: "PUT",
-          body: {
-            roomId,
-            markdown: modalToFallbackText(modal),
-            attachments: [
-              {
-                contentType: "application/vnd.microsoft.card.adaptive",
-                content: modalToWebexAdaptiveCard(modal, metadata),
-              },
-            ],
-          },
-        }
-      );
-    } catch (error) {
-      throw editRejection(messageId, error);
     }
 
     await this.storeModalState({
