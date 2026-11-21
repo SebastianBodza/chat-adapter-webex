@@ -10,10 +10,20 @@ updates:
     commit-message:
       prefix: "chore(deps)"
       prefix-development: "chore(dev-deps)"
+    ignore:
+      # @types/node tracks the oldest supported Node (22, see the CI matrix);
+      # newer majors would let code use APIs that Node 22 lacks.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
       # Chat SDK packages must move together (peer + runtime dependency).
       chat-sdk:
         patterns: ["chat", "@chat-adapter/*"]
+      # Packages with matching peer versions: a lone major bump fails `npm ci`.
+      vitest:
+        patterns: ["vitest", "@vitest/*"]
+      eslint:
+        patterns: ["eslint", "@eslint/*", "typescript-eslint"]
       dev-tooling:
         dependency-type: development
         update-types: [minor, patch]
