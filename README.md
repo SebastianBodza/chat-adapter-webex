@@ -80,7 +80,7 @@ bot.onNewMention(async (thread, message) => {
 
 ### Errors
 
-Failed operations throw the adapter's error classes, exported from this package: `ValidationError`, `AuthenticationError`, `PermissionError`, `ResourceNotFoundError`, `AdapterRateLimitError` (with `retryAfter`) and `NetworkError`. They extend `AdapterError` and carry the same `name` and `code` values as the classes in `@chat-adapter/shared`. Branch on `error.code` (for example `"RATE_LIMITED"`) if you mix adapters.
+Webex API and validation failures throw the adapter's error classes, exported from this package: `ValidationError`, `AuthenticationError`, `PermissionError`, `ResourceNotFoundError`, `AdapterRateLimitError` (with `retryAfter`) and `NetworkError`. They extend `AdapterError` and carry the same `name` and `code` values as the classes in `@chat-adapter/shared`. Branch on `error.code` (for example `"RATE_LIMITED"`) if you mix adapters. Unsupported features (`addReaction`, `removeReaction`) throw `chat`'s `NotImplementedError` instead.
 
 ### Limitations
 
