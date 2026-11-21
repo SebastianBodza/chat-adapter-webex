@@ -24,6 +24,7 @@ export default tseslint.config(
       globals: {
         Blob: "readonly",
         Buffer: "readonly",
+        clearTimeout: "readonly",
         FormData: "readonly",
         console: "readonly",
         fetch: "readonly",

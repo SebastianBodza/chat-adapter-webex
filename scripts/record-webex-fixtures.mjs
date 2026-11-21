@@ -128,6 +128,15 @@ async function http(method, path, body) {
   return { status: response.status, body: parsed };
 }
 
+/** Posts a setup message; stops the run if Webex didn't create it, so no misleading fixture is written. */
+async function post(body) {
+  const created = await http("POST", "/messages", body);
+  if (created.status >= 300 || !created.body?.id) {
+    throw new Error(`Setup POST /messages failed with ${created.status}: ${created.body?.message ?? "no message ID"}`);
+  }
+  return created;
+}
+
 function save(name, description) {
   mkdirSync(OUT_DIR, { recursive: true });
   const fixture = sanitize({
@@ -170,7 +179,7 @@ const label = `[fixtures ${new Date().toISOString().slice(0, 16)}]`;
 
 console.log("edit-without-room-id");
 {
-  const m = await http("POST", "/messages", text(`${label} edit without roomId`));
+  const m = await post(text(`${label} edit without roomId`));
   await http("PUT", `/messages/${m.body.id}`, { markdown: `${label} edited without roomId` });
   await http("PUT", `/messages/${m.body.id}`, { roomId, markdown: `${label} edited with roomId` });
   await http("GET", `/messages/${m.body.id}`);
@@ -179,7 +188,7 @@ console.log("edit-without-room-id");
 
 console.log("edit-text-and-card");
 {
-  const m = await http("POST", "/messages", text(`${label} text that becomes a card`));
+  const m = await post(text(`${label} text that becomes a card`));
   await http("PUT", `/messages/${m.body.id}`, { roomId, markdown: `${label} now a card`, attachments: card(`${label} edited into a card`, "noop", false) });
   await http("GET", `/messages/${m.body.id}`);
   await http("PUT", `/messages/${m.body.id}`, { roomId, markdown: `${label} back to text` });
@@ -189,14 +198,14 @@ console.log("edit-text-and-card");
 
 console.log("edit-missing-markdown");
 {
-  const m = await http("POST", "/messages", text(`${label} edit without text`));
+  const m = await post(text(`${label} edit without text`));
   await http("PUT", `/messages/${m.body.id}`, { roomId });
   save("edit-missing-markdown", "An edit without text or markdown is rejected.");
 }
 
 console.log("edit-wrong-room-id");
 {
-  const m = await http("POST", "/messages", text(`${label} edit with another roomId`));
+  const m = await post(text(`${label} edit with another roomId`));
   const otherRoom = Buffer.from("ciscospark://us/ROOM/00000000-0000-4000-8000-000000000000").toString("base64").replace(/=+$/, "");
   await http("PUT", `/messages/${m.body.id}`, { roomId: otherRoom, markdown: `${label} edited` });
   save("edit-wrong-room-id", "An edit whose roomId is not the message's room is rejected.");
@@ -208,14 +217,14 @@ console.log("edit-file-message");
   form.set("roomId", roomId);
   form.set("markdown", `${label} message with a file`);
   form.set("files", new Blob(["fixture file"], { type: "text/plain" }), "fixture.txt");
-  const m = await http("POST", "/messages", form);
+  const m = await post(form);
   await http("PUT", `/messages/${m.body.id}`, { roomId, markdown: `${label} edited file message` });
   save("edit-file-message", "Messages with files can't be edited (#9).");
 }
 
 console.log("edit-limit");
 {
-  const m = await http("POST", "/messages", text(`${label} edit limit v0`));
+  const m = await post(text(`${label} edit limit v0`));
   for (let i = 1; i <= 11; i++) await http("PUT", `/messages/${m.body.id}`, { roomId, markdown: `${label} edit limit v${i}` });
   save("edit-limit", "Webex allows 10 edits per message; the 11th is rejected (#8).");
 }
@@ -229,7 +238,7 @@ console.log("reply-to-unknown-parent");
 
 console.log("delete-message");
 {
-  const m = await http("POST", "/messages", text(`${label} to be deleted`));
+  const m = await post(text(`${label} to be deleted`));
   await http("DELETE", `/messages/${m.body.id}`);
   await http("GET", `/messages/${m.body.id}`);
   save("delete-message", "Deleting a message, then reading it.");
@@ -248,7 +257,14 @@ if (publicUrl) {
     res.end("ok");
     const signature = String(req.headers["x-spark-signature"] ?? "");
     const signatureValid = signature === createHmac("sha1", secret).update(raw).digest("hex");
-    const body = JSON.parse(raw || "{}");
+    // Anyone can reach the public URL: only signed Webex webhooks count.
+    if (!signatureValid) return;
+    let body;
+    try {
+      body = JSON.parse(raw);
+    } catch {
+      return;
+    }
     for (const waiter of [...waiters]) {
       if (waiter.match(body)) {
         waiters.splice(waiters.indexOf(waiter), 1);
@@ -258,29 +274,39 @@ if (publicUrl) {
   }).listen(port);
   const waitFor = (match, ms) =>
     new Promise((resolve) => {
-      const waiter = { match, resolve };
-      waiters.push(waiter);
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         if (waiters.includes(waiter)) {
           waiters.splice(waiters.indexOf(waiter), 1);
           resolve(undefined);
         }
       }, ms);
+      const waiter = {
+        match,
+        resolve: (value) => {
+          clearTimeout(timer);
+          resolve(value);
+        },
+      };
+      waiters.push(waiter);
     });
   const recordWebhook = ({ body, signatureValid }) =>
     steps.push({ type: "webhook", signed: true, signatureValid, headers: { "content-type": "application/json" }, body });
 
   const hooks = [];
-  for (const resource of ["messages", "attachmentActions"]) {
-    const r = await fetch(`${API}/webhooks`, {
-      method: "POST",
-      headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
-      body: JSON.stringify({ name: `fixtures-${resource}`, targetUrl: `${publicUrl}/api/webhooks/webex`, resource, event: "created", filter: `roomId=${roomId}`, secret }),
-    }).then((x) => x.json());
-    hooks.push(r.id);
-  }
-
   try {
+    for (const resource of ["messages", "attachmentActions"]) {
+      const response = await fetch(`${API}/webhooks`, {
+        method: "POST",
+        headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
+        body: JSON.stringify({ name: `fixtures-${resource}`, targetUrl: `${publicUrl}/api/webhooks/webex`, resource, event: "created", filter: `roomId=${roomId}`, secret }),
+      });
+      const created = await response.json().catch(() => ({}));
+      if (!response.ok || !created.id) {
+        throw new Error(`Creating the ${resource} webhook failed with ${response.status}: ${created.message ?? "no webhook ID"}`);
+      }
+      hooks.push(created.id);
+    }
+
     console.log(`\nwebhook-mention: mention the bot in the space, e.g. "@${me.displayName} hello"`);
     {
       const hook = await waitFor((b) => b.resource === "messages" && b.data?.personId !== me.id, 180_000);
@@ -294,7 +320,7 @@ if (publicUrl) {
     console.log("\nwebhook-card-submit: type a note into the card and press Send");
     let cardMessage;
     {
-      cardMessage = await http("POST", "/messages", { roomId, markdown: "fixture card", attachments: card(`${label} type a note and press Send`, "submit-note") });
+      cardMessage = await post({ roomId, markdown: "fixture card", attachments: card(`${label} type a note and press Send`, "submit-note") });
       const hook = await waitFor((b) => b.resource === "attachmentActions", 180_000);
       if (!hook) throw new Error("no card submit received");
       recordWebhook(hook);
@@ -313,7 +339,7 @@ if (publicUrl) {
         attachmentActionsWebhooks: hook ? 1 : 0,
       });
       console.log("\n  now press Send on the NEW card (replacement posted, old card deleted)");
-      const replacement = await http("POST", "/messages", { roomId, markdown: "fixture card (replacement)", attachments: card(`${label} replacement card: press Send`, "submit-replacement") });
+      const replacement = await post({ roomId, markdown: "fixture card (replacement)", attachments: card(`${label} replacement card: press Send`, "submit-replacement") });
       await http("DELETE", `/messages/${cardMessage.body.id}`);
       const second = await waitFor((b) => b.resource === "attachmentActions" && b.data?.messageId === replacement.body.id, 180_000);
       if (second) {

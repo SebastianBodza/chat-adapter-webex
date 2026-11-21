@@ -16,9 +16,12 @@
  *   Contrary to the docs, Adaptive Card attachments *can* be edited: the PUT
  *   body's `attachments` replace the message's (omitting them removes the card).
  *   https://developer.webex.com/messaging/docs/api/v1/messages/edit-a-message
- * - Error statuses and messages are the ones real Webex returns. They are
- *   checked against the recordings in `fixtures/webex/` by
- *   `webex-recorded.test.ts`.
+ * - Errors with a recording in `fixtures/webex/` use the status and message
+ *   real Webex returns, checked by `webex-recorded.test.ts`: edits (no roomId,
+ *   unknown room, no text, not the author, files, edit limit), replies to an
+ *   unknown parent, and reading a deleted message. Other errors (e.g. "Room
+ *   not found", "roomId does not match the message.", "Replies to replies are
+ *   not supported.") are not recorded and only approximate Webex.
  */
 import type {
   WebexAttachmentAction,

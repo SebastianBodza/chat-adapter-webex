@@ -95,9 +95,10 @@ async function replay(recording: Recording): Promise<void> {
       expect(body?.message, label).toBe(recorded?.message);
       continue;
     }
-    if (recorded?.id && body?.id) {
+    if (recorded?.id) {
+      expect(body?.id, label).toEqual(expect.any(String));
       if (step.request.method === "POST") {
-        ids.set(String(recorded.id), String(body.id));
+        ids.set(String(recorded.id), String(body?.id));
       }
       const expected = JSON.parse(swap(JSON.stringify(shapeOf(recorded as unknown as WebexMessage)))) as MessageShape;
       expect(shapeOf(body as unknown as WebexMessage), label).toEqual(expected);
@@ -229,6 +230,14 @@ describe("recorded Webex webhooks through the adapter", () => {
 
     expect(Object.keys(message.data).sort()).toEqual(Object.keys(realMessage).sort());
     expect(Object.keys(action.data).sort()).toEqual(Object.keys(realAction).sort());
+  });
+
+  it("substitutes whole placeholders only, and any value safely", () => {
+    // rec-message-1 must not rewrite rec-message-10; quotes and backslashes must survive.
+    const recording = loadRecording("edited-card-submit", { "rec-message-1": "wrong", "rec-message-10": 'a"b\\c' });
+    const [put] = httpSteps(recording);
+    expect(put?.request.path).toBe('/messages/a"b\\c');
+    expect(JSON.stringify(recording)).not.toContain("wrong");
   });
 
   it("covers every recorded request in a replay", () => {

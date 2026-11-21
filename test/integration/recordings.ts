@@ -71,12 +71,34 @@ export function recordingNames(): string[] {
     .sort();
 }
 
+/**
+ * Loads a recording. `substitutions` replaces whole placeholders in every
+ * string value (`rec-message-1` never matches inside `rec-message-10`).
+ */
 export function loadRecording(name: string, substitutions: Record<string, string> = {}): Recording {
-  let raw = readFileSync(new URL(`${name}.json`, FIXTURE_DIR), "utf8");
-  for (const [from, to] of Object.entries(substitutions)) {
-    raw = raw.split(from).join(to);
+  const recording = JSON.parse(readFileSync(new URL(`${name}.json`, FIXTURE_DIR), "utf8")) as Recording;
+  const keys = Object.keys(substitutions).sort((a, b) => b.length - a.length);
+  if (keys.length === 0) {
+    return recording;
   }
-  return JSON.parse(raw) as Recording;
+  const escaped = keys.map((key) => key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const placeholder = new RegExp(`(?<![\\w.-])(?:${escaped.join("|")})(?![\\w-])`, "g");
+  return substitute(recording, (value) => value.replace(placeholder, (match) => substitutions[match] ?? match));
+}
+
+function substitute<T>(value: T, replace: (text: string) => string): T {
+  if (typeof value === "string") {
+    return replace(value) as T;
+  }
+  if (Array.isArray(value)) {
+    return value.map((item: unknown) => substitute(item, replace)) as T;
+  }
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, inner]) => [key, substitute(inner, replace)])
+    ) as T;
+  }
+  return value;
 }
 
 export function httpSteps(recording: Recording): RecordedHttpStep[] {

@@ -115,8 +115,10 @@ WEBEX_BOT_TOKEN=… WEBEX_ROOM_ID=… node scripts/record-webex-fixtures.mjs
 ```
 
 Add `--webhooks <public URL>` (for example an ngrok tunnel to `--port`, default
-8787) to also record the mention and card-submit scenarios, which ask you to act
-in a Webex client.
+8787) to also record the interactive scenarios, which ask a person in the space
+to act in a Webex client: mention the bot (`webhook-mention`), submit a card
+(`webhook-card-submit`), then press Send on the edited card and on its
+replacement (`edited-card-submit`).
 
 `consumer-compat.sh` installs the packed tarball into an empty project like a
 user would and runs the same integration suite against the built package. The
